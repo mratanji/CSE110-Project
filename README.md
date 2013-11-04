@@ -11,3 +11,4 @@ Test :)
 Ryne Chaloux
 Alexander Chang
 Kenia Duque
+Sean Oh
