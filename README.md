@@ -12,7 +12,7 @@ Git repo for CSE110 Team 8 project
 6. Select root directory as your git directory
 7. Make sure ChatRouletteClient and ChatRouletteServer are checked
 8. Click finish
-9. Profit.
+9. The projects may show errors at first but for some reason just wait until they go away.
 
 
 =======
