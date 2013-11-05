@@ -1,9 +1,13 @@
+package com.group8.view;
+
 //The view receives messages and also has boolean indicators for the client to get
 //strings from the view. The view handles new input using the logic in runConsoleView().
 
 //Client will continuously check the view for new messages that the user inputs
 
-import java.util.*;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConsoleView implements View{
 
