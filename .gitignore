@@ -5,7 +5,8 @@
 *.war
 *.ear
 *.md~
-
+*.MF
+*.properties
 #Unneeded Eclipse Folders
 RemoteSystemsTempFiles/
 .metadata
