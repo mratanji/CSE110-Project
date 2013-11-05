@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.group8.client;
+package com.group8.server;
 
 import static org.junit.Assert.*;
 
