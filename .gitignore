@@ -7,6 +7,12 @@
 *.md~
 *.MF
 *.properties
+=======
+*.swp
+*.swp~
+*.o
+
 #Unneeded Eclipse Folders
 RemoteSystemsTempFiles/
 .metadata
+*/target/classes/META-INF/*
