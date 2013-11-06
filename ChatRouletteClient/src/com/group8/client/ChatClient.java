@@ -11,34 +11,30 @@ public class ChatClient implements MessageListener {
     private Session session;
     private Destination tempDest;
     private View view;
-    private boolean inputIsUsername = true;
     private String username;
+    private CommandGroup commandGroup;
     
  
     public ChatClient() {
     	view = new ConsoleView(this);
+    	commandGroup = new CommandGroup();
     	setupConnection();
     	displayWelcomeMessage();
     	displayHelp();
     }
     
     public void onCommandEntered(String message){
-    	//Parse the command entered.
-    	if(inputIsUsername){
-    		this.username = message;
-    		inputIsUsername = false;
-    		send("sign-on:" + this.username);
-    	}
-    	else{
-    		//Need a more extensive parse here, for now we are assuming command: send message to specified user
-    		String[] commandComponents = message.split(":");
-    		if(commandComponents.length == 3){
-    			send(message);
-    		}
-    		else{
-    			view.displayInfo("Invalid command");
-    		}
-    	}
+    	//This needs much better error checking.
+    	String[] commandComponents = message.split(":");
+		if(commandGroup.containsCommand(commandComponents[0])){
+			if(commandComponents[0].equals("sign-on")){
+				this.username = commandComponents[1];
+			}
+			send(message);
+		}
+		else{
+			view.displayInfo("Invalid command");
+		}
     }
     
     private void send(String message){
@@ -75,7 +71,7 @@ public class ChatClient implements MessageListener {
     
     private void displayHelp(){
     	view.displayInfo("Information about the commands available will go here. //TODO.\n");
-    	view.displayInfo("Please enter username: ");
+    	view.displayInfo("Enter commands below:\n");
     }
     
     private void setupConnection(){

@@ -15,10 +15,10 @@ public class Server implements MessageListener {
     private Session session;
     private MessageProducer producer;
     
-    private HashMap<String, User> userMap;
+    private UserDatabase userDatabase;
  
     public Server() {
-    	userMap = new HashMap<String, User>();
+    	userDatabase = new UserDatabase();
     	setupBrokerService();
         setupMessageQueueConsumer();
     }
@@ -29,13 +29,32 @@ public class Server implements MessageListener {
             String messageText = txtMsg.getText();
             String[] commandComponents = messageText.split(":");
             
-            //Combining the sign-on and the create user steps. These should be separate
-            if(commandComponents[0].equals("sign-on")){
-            	userMap.put(commandComponents[1], new User(commandComponents[1], message.getJMSReplyTo(), true));
+            //Need to handle if the database returns false meaning our command did not execute.
+            if(commandComponents[0].equals("add-user")){
+            	String username = commandComponents[1];
+            	Destination userDestination = message.getJMSReplyTo();
+            	userDatabase.addUser(username, userDestination);
+            }
+            else if(commandComponents[0].equals("remove-user")){
+            	String username = commandComponents[1];
+            	userDatabase.removeUser(username);
+            }
+            else if(commandComponents[0].equals("sign-on")){
+            	String username = commandComponents[1];
+            	Destination userDestination = message.getJMSReplyTo();
+            	userDatabase.signOnUser(username, userDestination);
+            }
+            else if(commandComponents[0].equals("sign-off")){
+            	String username = commandComponents[1];
+            	userDatabase.signOffUser(username);
             }
             else if(commandComponents[0].equals("send")){
-            	User toUser = userMap.get(commandComponents[1]);
-            	send(toUser.getDestination(), message.getStringProperty("username") + ": " + commandComponents[2]);
+            	String toUsername = commandComponents[1];
+            	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
+            	send(userDatabase.getUserDestination(toUsername), newMessage);
+            }
+            else if(commandComponents[0].equals("broadcast")){
+            	//For each user, send this message
             }
         }
         catch (JMSException e) {
