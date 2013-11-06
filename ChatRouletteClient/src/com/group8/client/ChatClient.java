@@ -1,42 +1,111 @@
 package com.group8.client;
 
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.group8.view.*;
 
-public class ChatClient {
-	private MessageProducer producer;
-	private Session session;
-	private View view;
-	
-	public ChatClient(MessageProducer producer, Session session) {
-		super();
-		this.producer = producer;
-		this.session = session;
-		//Default the view to a consoleView for now.
-		view = new ConsoleView(this);
-		welcomeUser();
-	} 
-	
-	private void send(String msg) throws JMSException {
-		producer.send(session.createTextMessage(msg));
-	}
-	
-	public void onCommandEntered(String command){
-		//For now, just acknowledge that are MVP structure is set up correctly
-		//In the future we will parse the command and perform the correct action
-		view.displayInfo("Client received command: \"" + command + "\"");
-	}
-	
-	private void welcomeUser(){
-		view.displayInfo("Welcome to Chat Roulette!");
-		displayHelp();
-	}
-	
-	private void displayHelp(){
-		view.displayInfo("\nInfo needed here to tell the user about what"
-				       + " commands are allowed.\nEnter commands below:");
-	}
+import javax.jms.*;
+
+public class ChatClient implements MessageListener { 
+    private MessageProducer producer;
+    private Session session;
+    private Destination tempDest;
+    private View view;
+    private boolean inputIsUsername = true;
+    private String username;
+    
+ 
+    public ChatClient() {
+    	view = new ConsoleView(this);
+    	setupConnection();
+    	displayWelcomeMessage();
+    	displayHelp();
+    }
+    
+    public void onCommandEntered(String message){
+    	//Parse the command entered.
+    	if(inputIsUsername){
+    		this.username = message;
+    		inputIsUsername = false;
+    		send("sign-on:" + this.username);
+    	}
+    	else{
+    		//Need a more extensive parse here, for now we are assuming command: send message to specified user
+    		String[] commandComponents = message.split(":");
+    		if(commandComponents.length == 3){
+    			send(message);
+    		}
+    		else{
+    			view.displayInfo("Invalid command");
+    		}
+    	}
+    }
+    
+    private void send(String message){
+    	try{
+            TextMessage txtMessage = session.createTextMessage();
+            txtMessage.setText(message);
+            txtMessage.setJMSReplyTo(tempDest);
+            txtMessage.setStringProperty("username", this.username);
+            this.producer.send(txtMessage);
+    	}
+    	catch(Exception e){
+    		
+    	}
+    }
+    
+    //Message listener
+    public void onMessage(Message message) {
+        String messageText = null;
+        try {
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                messageText = textMessage.getText();
+                view.displayMessage(messageText + "\n");
+            }
+        } 
+        catch (JMSException e) {
+
+        }
+    }
+    
+    private void displayWelcomeMessage(){
+    	view.displayInfo("Welcome to Chat Roulette!\n");
+    }
+    
+    private void displayHelp(){
+    	view.displayInfo("Information about the commands available will go here. //TODO.\n");
+    	view.displayInfo("Please enter username: ");
+    }
+    
+    private void setupConnection(){
+    	ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(Constants.ACTIVEMQ_URL);
+        Connection connection;
+        try {
+            connection = connectionFactory.createConnection();
+            connection.start();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination adminQueue = session.createQueue(Constants.QUEUENAME);
+ 
+            //Setup a message producer to send message to the queue the server is consuming from
+            this.producer = session.createProducer(adminQueue);
+            this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+ 
+            //Create a temporary queue that this client will listen for responses on then create a consumer
+            //that consumes message from this temporary queue...for a real application a client should reuse
+            //the same temp queue for each message to the server...one temp queue per client
+            tempDest = session.createTemporaryQueue();
+            MessageConsumer responseConsumer = session.createConsumer(tempDest);
+ 
+            //This class will handle the messages to the temp queue as well
+            responseConsumer.setMessageListener(this);
+        } 
+        catch (JMSException e) {
+
+        }
+    }
+    
+    public static void main(String[] args){
+    	new ChatClient();
+    }
 }
