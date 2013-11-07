@@ -3,9 +3,18 @@ package com.group8.server;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.group8.database.*;
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
-import javax.jms.*;
+import com.group8.database.UserDatabase;
 
 public class Server implements MessageListener {
  
@@ -77,6 +86,10 @@ public class Server implements MessageListener {
             }
             else if(commandComponents[0].equals("broadcast")){
             	//For each user, send this message
+            	//JMS_Topic vs looping through database and individually sending a message to all online users. 
+            }
+            else if(commandComponents[0].equals("list-all")){
+            	send(userDatabase.getUserDestination(message.getStringProperty("username")), userDatabase.listAllUsers()); 
             }
         }
         catch (JMSException e) {

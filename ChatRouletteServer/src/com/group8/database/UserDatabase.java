@@ -1,6 +1,8 @@
 package com.group8.database;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jms.Destination;
 
@@ -82,5 +84,21 @@ public class UserDatabase {
 		else{
 			throw new IllegalArgumentException();
 		}
+	}
+	
+	public String listAllUsers()
+	{
+		//List<String> onlineUsers = new LinkedList<String>();  
+		String onlineUsers = ""; 
+		User[] allUsers = (User[]) userMap.values().toArray();
+		
+		for( int i = 0; i < allUsers.length; i++ )
+		{
+			if(allUsers[i].isOnline())
+				onlineUsers = onlineUsers + "\n" + allUsers[i].getUsername();
+		}
+		
+		//System.out.println( onlineUsers ); 
+		return onlineUsers; 
 	}
 }

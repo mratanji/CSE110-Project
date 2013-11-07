@@ -1,10 +1,22 @@
 package com.group8.client;
 
+import java.util.List;
+
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.group8.view.*;
-
-import javax.jms.*;
+import com.group8.view.ConsoleView;
+import com.group8.view.View;
 
 public class ChatClient implements MessageListener { 
     private MessageProducer producer;
@@ -72,7 +84,14 @@ public class ChatClient implements MessageListener {
     }
     
     private void displayHelp(){
-    	view.displayInfo("Information about the commands available will go here. //TODO.\n");
+    	view.displayInfo("Type one of the following commands: \n");
+    	view.displayInfo("\t To add user type: \"add-user:<your_username>\" \n"
+    			+ "\t To remove your user account type: \"remove-user:<your_username>\" \n"
+    			+ "\t To sign on type: \"sign-on:<your_username>\" \n"
+    			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
+    			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
+    			+ "\t To broadcast a message to all online users type: \"broadcast:<message>\" \n"
+    			+ "\t To list all online users type: \"list-all:<your_username>\" \n");
     	view.displayInfo("Enter commands below:\n");
     }
     

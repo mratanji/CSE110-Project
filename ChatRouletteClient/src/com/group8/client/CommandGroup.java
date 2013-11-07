@@ -14,6 +14,7 @@ public class CommandGroup {
 		commandMap.put("send", "send");
 		commandMap.put("broadcast", "broadcast");
 		commandMap.put("exit", "exit");
+		commandMap.put("list-all", "list-all");
 	}
 	
 	public boolean isValidCommand(String command){
