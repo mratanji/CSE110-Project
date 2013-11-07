@@ -13,6 +13,7 @@ public class CommandGroup {
 		commandMap.put("sign-off", "sign-off");
 		commandMap.put("send", "send");
 		commandMap.put("broadcast", "broadcast");
+		commandMap.put("list-all", "list-all");
 	}
 	
 	public boolean containsCommand(String command){
