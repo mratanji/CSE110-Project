@@ -1,5 +1,8 @@
 package com.group8.database;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,15 +91,22 @@ public class UserDatabase {
 	
 	public String listAllUsers()
 	{
-		//List<String> onlineUsers = new LinkedList<String>();  
+		List<String> onlineUsersList = new LinkedList<String>();  
 		String onlineUsers = ""; 
-		User[] allUsers = (User[]) userMap.values().toArray();
+		
+		User[] allUsers = userMap.values().toArray(new User[userMap.size()]);
 		
 		for( int i = 0; i < allUsers.length; i++ )
 		{
 			if(allUsers[i].isOnline())
-				onlineUsers = onlineUsers + "\n" + allUsers[i].getUsername();
+				onlineUsersList.add(allUsers[i].getUsername());
 		}
+		
+		 java.util.Collections.sort(onlineUsersList);
+		 for(String user : onlineUsersList)
+		 {
+			onlineUsers = onlineUsers + "\n" + user;
+		 }
 		return onlineUsers; 
 	}
 	
