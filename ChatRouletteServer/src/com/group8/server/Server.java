@@ -1,13 +1,10 @@
 package com.group8.server;
 
-<<<<<<< HEAD
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-=======
->>>>>>> f20ab27ed250b1990f605df1bdc554d7b5fc0873
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -48,7 +45,6 @@ public class Server implements MessageListener {
             	String username = commandComponents[1];
             	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
-<<<<<<< HEAD
             	try {
 					userDatabase.addUser(username, password, userDestination);
 				} catch (FileNotFoundException e) {
@@ -66,23 +62,6 @@ public class Server implements MessageListener {
 					System.out.println("ERROR!: Log file couldn't be instantiated!");
 					e.printStackTrace();
 				}
-=======
-            	if(userDatabase.addUser(username, userDestination)){
-            		send(userDestination, "Info: '" + username + "' added to the database.");
-            	}
-            	else{
-            		send(userDestination, "Info: '" + username + "' already in the database.");
-            	}
-            }
-            else if(commandComponents[0].equals("remove-user")){
-            	String username = commandComponents[1];
-            	if(userDatabase.removeUser(username)){
-            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been removed from the database.");
-            	}
-            	else{
-            		send(message.getJMSReplyTo(), "Info: Error removing user from the database.");
-            	}
->>>>>>> f20ab27ed250b1990f605df1bdc554d7b5fc0873
             }
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
