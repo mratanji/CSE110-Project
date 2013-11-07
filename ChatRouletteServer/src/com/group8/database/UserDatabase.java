@@ -67,7 +67,7 @@ public class UserDatabase {
 	}
 	
 	public Destination getUserDestination(String username){
-		if(userMap.containsKey(username)){
+		if(userMap.containsKey(username) && isUserOnline(username)){
 			return userMap.get(username).getDestination();
 		}
 		else{

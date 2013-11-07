@@ -14,7 +14,6 @@ public class ChatClient implements MessageListener {
     private String username;
     private CommandGroup commandGroup;
     
- 
     public ChatClient() {
     	view = new ConsoleView(this);
     	commandGroup = new CommandGroup();
@@ -26,9 +25,12 @@ public class ChatClient implements MessageListener {
     public void onCommandEntered(String message){
     	//This needs much better error checking.
     	String[] commandComponents = message.split(":");
-		if(commandGroup.containsCommand(commandComponents[0])){
+		if(commandGroup.isValidCommand(message)){
 			if(commandComponents[0].equals("sign-on")){
 				this.username = commandComponents[1];
+			}
+			else if(commandComponents[0].equals("exit")){
+				System.exit(0);
 			}
 			send(message);
 		}

@@ -1,8 +1,5 @@
 package com.group8.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -33,25 +30,50 @@ public class Server implements MessageListener {
             if(commandComponents[0].equals("add-user")){
             	String username = commandComponents[1];
             	Destination userDestination = message.getJMSReplyTo();
-            	userDatabase.addUser(username, userDestination);
+            	if(userDatabase.addUser(username, userDestination)){
+            		send(userDestination, "Info: '" + username + "' added to the database.");
+            	}
+            	else{
+            		send(userDestination, "Info: '" + username + "' already in the database.");
+            	}
             }
             else if(commandComponents[0].equals("remove-user")){
             	String username = commandComponents[1];
-            	userDatabase.removeUser(username);
+            	if(userDatabase.removeUser(username)){
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been removed from the database.");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: Error removing user from the database.");
+            	}
             }
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
             	Destination userDestination = message.getJMSReplyTo();
-            	userDatabase.signOnUser(username, userDestination);
+            	if(userDatabase.signOnUser(username, userDestination)){
+            		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' is not a valid user.");
+            	}
             }
             else if(commandComponents[0].equals("sign-off")){
             	String username = commandComponents[1];
-            	userDatabase.signOffUser(username);
+            	if(userDatabase.signOffUser(username)){
+            		send(message.getJMSReplyTo(), "Info: " + username + " has been signed off.");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
+            	}
             }
             else if(commandComponents[0].equals("send")){
             	String toUsername = commandComponents[1];
             	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
-            	send(userDatabase.getUserDestination(toUsername), newMessage);
+            	try{
+            		send(userDatabase.getUserDestination(toUsername), newMessage);
+            	}
+            	catch(IllegalArgumentException e){
+            		send(message.getJMSReplyTo(), "Info: '" + toUsername + "' is not online or is not a valid user.");
+            	}
             }
             else if(commandComponents[0].equals("broadcast")){
             	//For each user, send this message
