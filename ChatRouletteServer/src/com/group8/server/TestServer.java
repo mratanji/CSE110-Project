@@ -15,6 +15,11 @@ public class TestServer {
 
 	@Test
 	public void testLogin() {
+		
+		Server base = new Server();
+		
+		
+		//base.onMessage(message);
 		// Test if valid credentials can be found in the database
 		fail("Not yet implemented");
 		
