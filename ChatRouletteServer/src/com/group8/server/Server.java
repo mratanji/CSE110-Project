@@ -66,9 +66,7 @@ public class Server implements MessageListener {
             	//JMS_Topic vs looping through database and individually sending a message to all online users. 
             }
             else if(commandComponents[0].equals("list-all")){
-            	//List<String> allUsers = userDatabase.listAllUsers(); 
-            	String toUsername = commandComponents[1];
-            	send(userDatabase.getUserDestination(toUsername), userDatabase.listAllUsers()); 
+            	send(userDatabase.getUserDestination(message.getStringProperty("username")), userDatabase.listAllUsers()); 
             }
         }
         catch (JMSException e) {
