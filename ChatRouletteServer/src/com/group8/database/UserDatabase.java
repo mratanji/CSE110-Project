@@ -11,8 +11,6 @@ public class UserDatabase {
 		userMap = new HashMap<String, User>();
 	}
 	
-	/** Maybe these should all be void and throw exceptions instead of returning false **/
-	
 	//Returns false if user is already in the database
 	public boolean addUser(String username, Destination destination){
 		if(userMap.containsKey(username)){
@@ -39,6 +37,8 @@ public class UserDatabase {
 	public boolean signOnUser(String username, Destination destination){
 		if(userMap.containsKey(username)){
 			User currentUser = userMap.get(username);
+			if(this.isUserOnline(username))
+				return false;
 			currentUser.setOnline(true);
 			currentUser.setDestination(destination);
 			userMap.put(username, currentUser);
