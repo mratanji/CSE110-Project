@@ -19,7 +19,7 @@ public class CommandGroup {
 	
 	public boolean isValidCommand(String command){
 		String[] commandComponents = command.split(":");
-		if(commandMap.containsKey(command)){
+		if(commandMap.containsKey(commandComponents[0])){
 			if(commandComponents[0].equals("add-user")){
 				if(commandComponents.length != 2){
 					return false;
@@ -46,6 +46,11 @@ public class CommandGroup {
 				}
 			}
 			else if(commandComponents[0].equals("exit")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("list-all")){
 				if(commandComponents.length != 1){
 					return false;
 				}

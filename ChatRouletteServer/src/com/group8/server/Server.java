@@ -93,7 +93,10 @@ public class Server implements MessageListener {
             	}
             }
             else if(commandComponents[0].equals("list-all")){
-            	send(userDatabase.getUserDestination(message.getStringProperty("username")), userDatabase.listAllUsers()); 
+            	System.out.println("received list-all");
+            	System.out.println(userDatabase.listAllUsers());
+            	
+            	//send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
             }
         }
         catch (JMSException e) {

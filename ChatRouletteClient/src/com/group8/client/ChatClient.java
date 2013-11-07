@@ -36,8 +36,8 @@ public class ChatClient implements MessageListener {
     
     public void onCommandEntered(String message){
     	//This needs much better error checking.
-    	String[] commandComponents = message.split(":");
 		if(commandGroup.isValidCommand(message)){
+			String[] commandComponents = message.split(":");
 			if(commandComponents[0].equals("sign-on")){
 				this.username = commandComponents[1];
 			}
@@ -92,7 +92,7 @@ public class ChatClient implements MessageListener {
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
     			+ "\t To broadcast a message to all online users type: \"broadcast:<message>\" \n"
     			+ "\t To list all online users type: \"list-all:<your_username>\" \n");
-    	view.displayInfo("Enter commands below:\n");
+    	view.displayInfo("Enter commands below:");
     }
     
     private void setupConnection(){
