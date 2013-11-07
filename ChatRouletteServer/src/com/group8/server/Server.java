@@ -1,5 +1,7 @@
 package com.group8.server;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,12 +34,25 @@ public class Server implements MessageListener {
             //Need to handle if the database returns false meaning our command did not execute.
             if(commandComponents[0].equals("add-user")){
             	String username = commandComponents[1];
+            	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
-            	userDatabase.addUser(username, userDestination);
+            	try {
+					userDatabase.addUser(username, password, userDestination);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					System.out.println("ERROR!: Log file couldn't be instantiated!");
+					e.printStackTrace();
+				}
             }
             else if(commandComponents[0].equals("remove-user")){
             	String username = commandComponents[1];
-            	userDatabase.removeUser(username);
+            	try {
+					userDatabase.removeUser(username);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.out.println("ERROR!: Log file couldn't be instantiated!");
+					e.printStackTrace();
+				}
             }
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
