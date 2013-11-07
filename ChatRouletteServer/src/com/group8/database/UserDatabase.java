@@ -101,12 +101,25 @@ public class UserDatabase {
 			if(allUsers[i].isOnline())
 				onlineUsersList.add(allUsers[i].getUsername());
 		}
-
+		
 		 java.util.Collections.sort(onlineUsersList);
 		 for(String user : onlineUsersList)
 		 {
 			onlineUsers = onlineUsers + "\n" + user;
 		 }
 		return onlineUsers; 
+	}
+	
+	public String[] getAllUsers()
+	{
+		List<String> onlineUsers = new LinkedList<String>();  
+		User[] allUsers = (User[]) userMap.values().toArray();
+		
+		for( int i = 0; i < allUsers.length; i++ )
+		{
+			if(allUsers[i].isOnline())
+				onlineUsers.add( allUsers[i].getUsername() );
+		}
+		return (String[]) onlineUsers.toArray(); 
 	}
 }
