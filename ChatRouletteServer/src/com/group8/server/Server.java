@@ -62,7 +62,7 @@ public class Server implements MessageListener {
             		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
             	}
             	else{
-            		send(message.getJMSReplyTo(), "Info: '" + username + "' is not a valid user.");
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' is already online or is not a valid user.");
             	}
             }
             else if(commandComponents[0].equals("sign-off")){
@@ -89,14 +89,13 @@ public class Server implements MessageListener {
             	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
             	String[] usersOnline = userDatabase.getAllUsers(); 
             	for(String currentUser:usersOnline){
-            		send(userDatabase.getUserDestination(currentUser), broadcastMessage);
+            		if(!currentUser.equals(message.getStringProperty("username"))){
+                		send(userDatabase.getUserDestination(currentUser), broadcastMessage);
+            		}
             	}
             }
             else if(commandComponents[0].equals("list-all")){
-            	System.out.println("received list-all");
-            	System.out.println(userDatabase.listAllUsers());
-            	
-            	//send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
+            	send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
             }
         }
         catch (JMSException e) {

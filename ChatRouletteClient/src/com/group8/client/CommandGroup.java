@@ -55,6 +55,11 @@ public class CommandGroup {
 					return false;
 				}
 			}
+			else if(commandComponents[0].equals("broadcast")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
 			else{
 				return false;
 			}

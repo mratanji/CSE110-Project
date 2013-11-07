@@ -112,14 +112,14 @@ public class UserDatabase {
 	
 	public String[] getAllUsers()
 	{
-		List<String> onlineUsers = new LinkedList<String>();  
-		User[] allUsers = (User[]) userMap.values().toArray();
+		List<String> onlineUsers = new LinkedList<String>();
+		User[] allUsers = userMap.values().toArray(new User[userMap.size()]);
 		
 		for( int i = 0; i < allUsers.length; i++ )
 		{
 			if(allUsers[i].isOnline())
 				onlineUsers.add( allUsers[i].getUsername() );
 		}
-		return (String[]) onlineUsers.toArray(); 
+		return (String[]) onlineUsers.toArray(new String[onlineUsers.size()]); 
 	}
 }
