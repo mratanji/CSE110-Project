@@ -45,28 +45,19 @@ public class Server implements MessageListener {
             	String username = commandComponents[1];
             	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
-            	try {
-					userDatabase.addUser(username, password, userDestination);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					System.out.println("ERROR!: Log file couldn't be instantiated!");
-					e.printStackTrace();
-				}
+				userDatabase.addUser(username, password, userDestination);
+		
             }
             else if(commandComponents[0].equals("remove-user")){
             	String username = commandComponents[1];
-            	try {
-					userDatabase.removeUser(username);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					System.out.println("ERROR!: Log file couldn't be instantiated!");
-					e.printStackTrace();
-				}
+            	userDatabase.removeUser(username);
             }
+            
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
+            	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
-            	if(userDatabase.signOnUser(username, userDestination)){
+            	if(userDatabase.signOnUser(username, password, userDestination)){
             		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
             	}
             	else{

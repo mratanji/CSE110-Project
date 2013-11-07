@@ -24,6 +24,7 @@ public class ChatClient implements MessageListener {
     private Destination tempDest;
     private View view;
     private String username;
+    private String password;
     private CommandGroup commandGroup;
     
     public ChatClient() {
@@ -40,6 +41,7 @@ public class ChatClient implements MessageListener {
 			String[] commandComponents = message.split(":");
 			if(commandComponents[0].equals("sign-on")){
 				this.username = commandComponents[1];
+				this.password = commandComponents[2];
 			}
 			else if(commandComponents[0].equals("exit")){
 				System.exit(0);
@@ -57,6 +59,7 @@ public class ChatClient implements MessageListener {
             txtMessage.setText(message);
             txtMessage.setJMSReplyTo(tempDest);
             txtMessage.setStringProperty("username", this.username);
+            txtMessage.setStringProperty("password", this.password);
             this.producer.send(txtMessage);
     	}
     	catch(Exception e){
@@ -87,7 +90,7 @@ public class ChatClient implements MessageListener {
     	view.displayInfo("Type one of the following commands: \n");
     	view.displayInfo("\t To add user type: \"add-user:<your_username>\" \n"
     			+ "\t To remove your user account type: \"remove-user:<your_username>\" \n"
-    			+ "\t To sign on type: \"sign-on:<your_username>\" \n"
+    			+ "\t To sign on type: \"sign-on:<your_username>:<your password>\" \n"
     			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
     			+ "\t To broadcast a message to all online users type: \"broadcast:<message>\" \n"

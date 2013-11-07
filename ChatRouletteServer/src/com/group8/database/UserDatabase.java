@@ -34,19 +34,32 @@ public class UserDatabase {
 	/** Maybe these should all be void and throw exceptions instead of returning false 
 	 * @throws IOException **/
 	
-	// Returns false if the user log file cannot be created
-	public boolean populateUserMap() throws IOException{
+	// Returns false if the user log file cannot be created, shouldn't throw exceptions
+	public boolean populateUserMap(){
 		// Check if a log file already exists
-		File userLog = new File("userLog.txt");
-		Scanner s = new Scanner(userLog);
-		if( !(userLog.exists())){
-			userLog.createNewFile();
+		File userLog;
+		Scanner s;
+		try{
+			userLog = new File("userLog.txt");
+			s = new Scanner(userLog);
+		} catch(Exception e){
+			System.out.println("Error: couldn't populate the userLog!");
+			return false;
 		}
+		if( !(userLog.exists())){
+			try{ 
+				userLog.createNewFile(); 
+			}catch(Exception e){
+				System.out.println("Error: couldn't createNewFile for userLog!");
+				s.close();
+				return false;}
+		}
+
 		else{
 			// It exists, so now parse through the file and add user objects to the database
 			while( s.hasNextLine()){
 				String current = s.nextLine();
-				String[] userElements = current.split(" ", 2);
+				String[] userElements = current.split(":", 2);
 				// Add to the hashMap, the addUser method should handle duplicate cases
 				this.addUser(userElements[0], userElements[1], null);
 			}
@@ -55,8 +68,8 @@ public class UserDatabase {
 		return true;
 	}
 
-	//Returns false if user is already in the database
-	public boolean addUser(String username, String password, Destination destination) throws FileNotFoundException{
+	//Returns false if user is already in the database, again, a lot of exception handling
+	public boolean addUser(String username, String password, Destination destination){
 
 		if(userMap.containsKey(username)){
 			return false;
@@ -65,16 +78,22 @@ public class UserDatabase {
 			userMap.put(username, new User(username,password, destination, false));
 			
 			// Now, add the user to the userLog file
-			FileOutputStream userLog = new FileOutputStream(new File("userLog.txt"), true);
+			FileOutputStream userLog;
+			try{
+				userLog = new FileOutputStream(new File("userLog.txt"), true);
+			}catch(Exception e){
+				System.out.println("Error: In addUser(): Couldn't open fileOutputStream!");
+				return false;
+			}
 			PrintStream userLogStream = new PrintStream(userLog);
-			userLogStream.println(username + password);
+			userLogStream.println(username + ":" + password);
 			userLogStream.close();
 			return true;
 		}
 	}
 	
-	//Returns false if user is not in the database
-	public boolean removeUser(String username) throws IOException{
+	//Returns false if user is not in the database, a lot of exception handling done here
+	public boolean removeUser(String username) {
 		if(userMap.containsKey(username)){
 			userMap.remove(username);
 			
@@ -82,22 +101,35 @@ public class UserDatabase {
 			// Construct temporary file
 			File userLog = new File("userLog.txt");
 			File tempLog = new File("userLogtemp.txt");
-
-			BufferedReader reader = new BufferedReader (new FileReader(userLog));
-			PrintWriter writer = new PrintWriter(new FileWriter (tempLog));
+			BufferedReader reader;
+			PrintWriter writer;
+			try{
+				reader = new BufferedReader (new FileReader(userLog));
+				writer = new PrintWriter(new FileWriter (tempLog));
+			}catch(Exception e){
+				System.out.println("Error: In removeUser: Couldn't create buffer reader/writer!");
+				return false;
+			}
 			String line = null;
 
-			//read from original, write to temporary and trim space, while title not found
-			while((line = reader.readLine()) !=null) {
-			    if(line.split(" ", 1)[0].equals(username)){
-			        continue;          }
-			    else{
-			        writer.println(line);
-			        writer.flush();
-			    }
+			// Read from original, write to temporary and trim space, while user name is not found
+			try{
+				while((line = reader.readLine()) !=null) {
+				    if(line.split(":", 1)[0].equals(username)){
+				        continue;          }
+				    else{
+				        writer.println(line);
+				        writer.flush();
+				    }
+				}
+				// Close reader inside try-catch
+				reader.close();
+			}catch(Exception e){
+				System.out.println("Error: In removeUser: Couldn't read nextLine or close reader!");
+				writer.close();
+				return false;
 			}
-			// close resource leaks
-			reader.close();
+			// close writer leaks
 			writer.close();
 
 			// delete old file
@@ -116,9 +148,11 @@ public class UserDatabase {
 	}
 	
 	//Returns false if user is not in the database
-	public boolean signOnUser(String username, Destination destination){
+	public boolean signOnUser(String username, String password, Destination destination){
 		if(userMap.containsKey(username)){
 			User currentUser = userMap.get(username);
+			if( !(currentUser.getPassword().equals(password)))
+					return false; // The password was wrong!
 			if(this.isUserOnline(username))
 				return false;
 			currentUser.setOnline(true);
