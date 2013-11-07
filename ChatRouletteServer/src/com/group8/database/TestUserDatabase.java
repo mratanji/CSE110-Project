@@ -108,4 +108,29 @@ public class TestUserDatabase {
 		
 	}
 
+	@Test
+	public void testListAllOnlineUsers()
+	{
+		UserDatabase users = new UserDatabase();
+	    Destination destination = null;	
+		assertTrue(users.addUser("Alexander", destination ));
+		users.signOnUser("Alexander", destination);
+		assertTrue(users.addUser("Stanley", destination ));
+		users.signOnUser("Stanley", destination);
+		assertTrue(users.addUser("Ryne", destination ));
+		users.signOnUser("Ryne", destination);
+		assertTrue(users.addUser("Monish", destination ));
+		users.signOnUser("Monish", destination);
+		assertTrue(users.addUser("Nonie", destination ));
+		users.signOffUser("Nonie");
+		
+		String onlineUsers = "\nAlexander\nMonish\nRyne\nStanley";
+		
+		assertEquals(onlineUsers, users.listAllUsers());
+		
+		
+		
+		
+		
+	}
 }
