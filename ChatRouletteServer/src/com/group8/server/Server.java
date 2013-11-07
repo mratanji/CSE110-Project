@@ -1,16 +1,28 @@
 package com.group8.server;
 
+<<<<<<< HEAD
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+=======
+>>>>>>> f20ab27ed250b1990f605df1bdc554d7b5fc0873
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.group8.database.*;
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
-import javax.jms.*;
+import com.group8.database.UserDatabase;
 
 public class Server implements MessageListener {
  
@@ -36,6 +48,7 @@ public class Server implements MessageListener {
             	String username = commandComponents[1];
             	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
+<<<<<<< HEAD
             	try {
 					userDatabase.addUser(username, password, userDestination);
 				} catch (FileNotFoundException e) {
@@ -53,23 +66,66 @@ public class Server implements MessageListener {
 					System.out.println("ERROR!: Log file couldn't be instantiated!");
 					e.printStackTrace();
 				}
+=======
+            	if(userDatabase.addUser(username, userDestination)){
+            		send(userDestination, "Info: '" + username + "' added to the database.");
+            	}
+            	else{
+            		send(userDestination, "Info: '" + username + "' already in the database.");
+            	}
+            }
+            else if(commandComponents[0].equals("remove-user")){
+            	String username = commandComponents[1];
+            	if(userDatabase.removeUser(username)){
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been removed from the database.");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: Error removing user from the database.");
+            	}
+>>>>>>> f20ab27ed250b1990f605df1bdc554d7b5fc0873
             }
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
             	Destination userDestination = message.getJMSReplyTo();
-            	userDatabase.signOnUser(username, userDestination);
+            	if(userDatabase.signOnUser(username, userDestination)){
+            		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' is not a valid user.");
+            	}
             }
             else if(commandComponents[0].equals("sign-off")){
             	String username = commandComponents[1];
-            	userDatabase.signOffUser(username);
+            	if(userDatabase.signOffUser(username)){
+            		send(message.getJMSReplyTo(), "Info: " + username + " has been signed off.");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
+            	}
             }
             else if(commandComponents[0].equals("send")){
             	String toUsername = commandComponents[1];
             	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
-            	send(userDatabase.getUserDestination(toUsername), newMessage);
+            	try{
+            		send(userDatabase.getUserDestination(toUsername), newMessage);
+            	}
+            	catch(IllegalArgumentException e){
+            		send(message.getJMSReplyTo(), "Info: '" + toUsername + "' is not online or is not a valid user.");
+            	}
             }
             else if(commandComponents[0].equals("broadcast")){
             	//For each user, send this message
+            	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
+            	String[] usersOnline = userDatabase.getAllUsers(); 
+            	for(String currentUser:usersOnline){
+            		send(userDatabase.getUserDestination(currentUser), broadcastMessage);
+            	}
+            }
+            else if(commandComponents[0].equals("list-all")){
+            	System.out.println("received list-all");
+            	System.out.println(userDatabase.listAllUsers());
+            	
+            	//send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
             }
         }
         catch (JMSException e) {

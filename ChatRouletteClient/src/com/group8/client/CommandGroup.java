@@ -8,14 +8,60 @@ public class CommandGroup {
 	public CommandGroup(){
 		commandMap = new HashMap<String, String>();
 		commandMap.put("add-user", "add-user");
-		commandMap.put("remove-user", "remove-user");
+		commandMap.put("delete-my-account", "delete-my-account");
 		commandMap.put("sign-on", "sign-on");
 		commandMap.put("sign-off", "sign-off");
 		commandMap.put("send", "send");
 		commandMap.put("broadcast", "broadcast");
+		commandMap.put("exit", "exit");
+		commandMap.put("list-all", "list-all");
 	}
 	
-	public boolean containsCommand(String command){
-		return commandMap.containsKey(command);
+	public boolean isValidCommand(String command){
+		String[] commandComponents = command.split(":");
+		if(commandMap.containsKey(commandComponents[0])){
+			if(commandComponents[0].equals("add-user")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("delete-my-account")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("sign-on")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("sign-off")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("send")){
+				if(commandComponents.length != 3){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("exit")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("list-all")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+		return true;
 	}
 }

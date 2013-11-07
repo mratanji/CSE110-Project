@@ -1,5 +1,8 @@
 package com.group8.database;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +15,10 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import java.util.LinkedList;
+import java.util.List;
+
+
 import javax.jms.Destination;
 
 
@@ -23,6 +30,7 @@ public class UserDatabase {
 		userMap = new HashMap<String, User>();
 	}
 	
+
 	/** Maybe these should all be void and throw exceptions instead of returning false 
 	 * @throws IOException **/
 	
@@ -46,6 +54,7 @@ public class UserDatabase {
 		s.close();
 		return true;
 	}
+
 	//Returns false if user is already in the database
 	public boolean addUser(String username, String password, Destination destination) throws FileNotFoundException{
 
@@ -110,6 +119,8 @@ public class UserDatabase {
 	public boolean signOnUser(String username, Destination destination){
 		if(userMap.containsKey(username)){
 			User currentUser = userMap.get(username);
+			if(this.isUserOnline(username))
+				return false;
 			currentUser.setOnline(true);
 			currentUser.setDestination(destination);
 			userMap.put(username, currentUser);
@@ -138,7 +149,7 @@ public class UserDatabase {
 	}
 	
 	public Destination getUserDestination(String username){
-		if(userMap.containsKey(username)){
+		if(userMap.containsKey(username) && isUserOnline(username)){
 			return userMap.get(username).getDestination();
 		}
 		else{
@@ -153,5 +164,39 @@ public class UserDatabase {
 		else{
 			throw new IllegalArgumentException();
 		}
+	}
+	
+	public String listAllUsers()
+	{
+		List<String> onlineUsersList = new LinkedList<String>();  
+		String onlineUsers = ""; 
+		
+		User[] allUsers = userMap.values().toArray(new User[userMap.size()]);
+		
+		for( int i = 0; i < allUsers.length; i++ )
+		{
+			if(allUsers[i].isOnline())
+				onlineUsersList.add(allUsers[i].getUsername());
+		}
+		
+		 java.util.Collections.sort(onlineUsersList);
+		 for(String user : onlineUsersList)
+		 {
+			onlineUsers = onlineUsers + "\n" + user;
+		 }
+		return onlineUsers; 
+	}
+	
+	public String[] getAllUsers()
+	{
+		List<String> onlineUsers = new LinkedList<String>();  
+		User[] allUsers = (User[]) userMap.values().toArray();
+		
+		for( int i = 0; i < allUsers.length; i++ )
+		{
+			if(allUsers[i].isOnline())
+				onlineUsers.add( allUsers[i].getUsername() );
+		}
+		return (String[]) onlineUsers.toArray(); 
 	}
 }

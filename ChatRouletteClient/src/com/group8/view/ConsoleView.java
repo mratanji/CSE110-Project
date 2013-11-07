@@ -25,11 +25,11 @@ public class ConsoleView extends Thread implements View{
 	}
 
 	public void displayMessage(String msg){
-		System.out.print(msg);
+		System.out.println(msg);
 	}
 
 	public void displayInfo(String info){
-		System.out.print(info);
+		System.out.println(info);
 	}
 }
 
