@@ -1,7 +1,5 @@
 package com.group8.client;
 
-import java.util.List;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -24,7 +22,7 @@ public class ChatClient implements MessageListener {
     private Destination tempDest;
     private View view;
     private String username;
-    private String password;
+    private String tempUsername;
     private CommandGroup commandGroup;
     
     public ChatClient() {
@@ -40,10 +38,10 @@ public class ChatClient implements MessageListener {
 		if(commandGroup.isValidCommand(message)){
 			String[] commandComponents = message.split(":");
 			if(commandComponents[0].equals("sign-on")){
-				this.username = commandComponents[1];
-				this.password = commandComponents[2];
+				this.tempUsername = commandComponents[1];
 			}
 			else if(commandComponents[0].equals("exit")){
+				send("sign-off");
 				System.exit(0);
 			}
 			send(message);
@@ -59,7 +57,6 @@ public class ChatClient implements MessageListener {
             txtMessage.setText(message);
             txtMessage.setJMSReplyTo(tempDest);
             txtMessage.setStringProperty("username", this.username);
-            txtMessage.setStringProperty("password", this.password);
             this.producer.send(txtMessage);
     	}
     	catch(Exception e){
@@ -74,7 +71,17 @@ public class ChatClient implements MessageListener {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 messageText = textMessage.getText();
-                view.displayMessage(messageText + "\n");
+                if(messageText.contains("Welcome")){
+                	if(this.username != null){
+                		send("sign-off");
+                	}
+                	//We set this here because it is when we know that the sign-on was successful.
+                	this.username = this.tempUsername;
+                }
+                else if(messageText.contains("You're account has been removed")){
+                	this.username = null;
+                }
+                view.displayMessage(messageText);
             }
         } 
         catch (JMSException e) {
@@ -89,7 +96,7 @@ public class ChatClient implements MessageListener {
     private void displayHelp(){
     	view.displayInfo("Type one of the following commands: \n");
     	view.displayInfo("\t To add user type: \"add-user:<your_username>\" \n"
-    			+ "\t To remove your user account type: \"remove-user:<your_username>\" \n"
+    			+ "\t To delete your user account type: \"delete-my-account\" \n"
     			+ "\t To sign on type: \"sign-on:<your_username>:<your password>\" \n"
     			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"

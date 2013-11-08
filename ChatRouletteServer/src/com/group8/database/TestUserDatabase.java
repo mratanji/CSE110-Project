@@ -19,7 +19,7 @@ public class TestUserDatabase {
 		    Destination destination = null;	
 			assertTrue(users.addUser("Alexander", "password123", destination ));
 			assertFalse(users.addUser("Alexander", "password123", destination ));
-		}catch(IOException e){fail();}
+		}catch(IllegalArgumentException e){fail();}
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class TestUserDatabase {
 			assertTrue(users.addUser("Alexander", "password123", destination ));
 			assertTrue(users.removeUser("Alexander"));
 			assertFalse(users.removeUser("Stanley"));
-		}catch(IOException e){fail();}
+		}catch(IllegalArgumentException e){fail();}
 	}
 
 	@Test
@@ -39,12 +39,12 @@ public class TestUserDatabase {
 			UserDatabase users = new UserDatabase();
 		    Destination destination = null;	
 			assertTrue(users.addUser("Alexander", "password123", destination ));
-			assertTrue(users.signOnUser("Alexander", destination));
-			assertFalse(users.signOnUser("Stanley", destination));
+			assertTrue(users.signOnUser("Alexander", "password123", destination));
+			assertFalse(users.signOnUser("Stanley", "password123", destination));
 			
-			assertFalse(users.signOnUser("Alexander", destination));
+			assertFalse(users.signOnUser("Alexander", "password123", destination));
 		}
-		catch(FileNotFoundException e){fail();}
+		catch(IllegalArgumentException e){fail();}
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class TestUserDatabase {
 			assertTrue(users.signOffUser("Alexander"));
 			assertFalse(users.signOffUser("Stanley"));
 		}
-		catch(FileNotFoundException e){fail();}
+		catch(IllegalArgumentException e){fail();}
 		//assertFalse(users.signOffUser("Alexander"));		
 	}
 
@@ -68,7 +68,7 @@ public class TestUserDatabase {
 			assertTrue(users.addUser("Alexander", "password123", destination ));
 			assertTrue(users.containsUser("Alexander"));
 		}
-		catch(FileNotFoundException e){fail();}
+		catch(IllegalArgumentException e){fail();}
 	}
 
 	@Test
@@ -79,8 +79,7 @@ public class TestUserDatabase {
 			assertTrue(users.addUser("Alexander", "password123", destination ));
 			assertEquals(null, users.getUserDestination("Alexander"));	
 		}
-		catch(IllegalArgumentException e){}
-		catch(FileNotFoundException e){fail();}
+		catch(IllegalArgumentException e){fail();}
 		
 		try{
 			UserDatabase users = new UserDatabase();
@@ -90,8 +89,7 @@ public class TestUserDatabase {
 			fail();
 			
 		}
-		catch(IllegalArgumentException e){}
-		catch(FileNotFoundException e){fail();}
+		catch(IllegalArgumentException e){fail();}
 	}
 
 	@Test
@@ -100,12 +98,11 @@ public class TestUserDatabase {
 			UserDatabase users = new UserDatabase();
 		    Destination destination = null;	
 			assertTrue(users.addUser("Alexander", "password123", destination ));
-			users.signOnUser("Alexander", destination);
+			users.signOnUser("Alexander", "password123", destination);
 			assertTrue(users.isUserOnline("Alexander"));
 			
 		}
 		catch(IllegalArgumentException e){fail();}
-		catch(FileNotFoundException e){fail();}
 		
 		try{
 			UserDatabase users = new UserDatabase();
@@ -116,7 +113,6 @@ public class TestUserDatabase {
 			
 		}
 		catch(IllegalArgumentException e){}
-		catch(FileNotFoundException e){fail();}
 	}
 
 	@Test
@@ -126,20 +122,20 @@ public class TestUserDatabase {
 			UserDatabase users = new UserDatabase();
 		    Destination destination = null;	
 			assertTrue(users.addUser("Alexander", "password123", destination ));
-			users.signOnUser("Alexander", destination);
+			users.signOnUser("Alexander", "password123", destination);
 			assertTrue(users.addUser("Stanley", "password123", destination ));
-			users.signOnUser("Stanley", destination);
+			users.signOnUser("Stanley", "password123", destination);
 			assertTrue(users.addUser("Ryne", "password123", destination ));
-			users.signOnUser("Ryne", destination);
+			users.signOnUser("Ryne", "password123", destination);
 			assertTrue(users.addUser("Monish", "password123", destination ));
-			users.signOnUser("Monish", destination);
+			users.signOnUser("Monish", "password123", destination);
 			assertTrue(users.addUser("Nonie", "password123", destination ));
 			users.signOffUser("Nonie");
 			
 			String onlineUsers = "\nAlexander\nMonish\nRyne\nStanley";
 			
 			assertEquals(onlineUsers, users.listAllUsers());
-		}catch(FileNotFoundException e){fail();}
+		}catch(IllegalArgumentException e){fail();}
 		
 		
 		

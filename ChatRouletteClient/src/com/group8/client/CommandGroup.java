@@ -21,7 +21,7 @@ public class CommandGroup {
 		String[] commandComponents = command.split(":");
 		if(commandMap.containsKey(commandComponents[0])){
 			if(commandComponents[0].equals("add-user")){
-				if(commandComponents.length != 2){
+				if(commandComponents.length != 3){
 					return false;
 				}
 			}
@@ -31,7 +31,7 @@ public class CommandGroup {
 				}
 			}
 			else if(commandComponents[0].equals("sign-on")){
-				if(commandComponents.length != 2){
+				if(commandComponents.length != 3){
 					return false;
 				}
 			}

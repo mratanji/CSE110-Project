@@ -45,14 +45,24 @@ public class Server implements MessageListener {
             	String username = commandComponents[1];
             	String password = commandComponents[2];
             	Destination userDestination = message.getJMSReplyTo();
-				userDatabase.addUser(username, password, userDestination);
+            	
+				if(userDatabase.addUser(username, password, userDestination)){
+					send(message.getJMSReplyTo(), "Info: '" + username + "' has been added to the database.");
+				}
+				else{
+					send(message.getJMSReplyTo(), "Info: '" + username + "' is already in the database.");
+				}
 		
             }
-            else if(commandComponents[0].equals("remove-user")){
-            	String username = commandComponents[1];
-            	userDatabase.removeUser(username);
+            else if(commandComponents[0].equals("delete-my-account")){
+            	String username = message.getStringProperty("username");
+            	if(userDatabase.removeUser(username)){
+            		send(message.getJMSReplyTo(), "You're account has been removed. We are sorry to see you go.");
+            	}
+            	else{
+            		send(message.getJMSReplyTo(), "Info: Error deleting account. Are you signed on?");
+            	}
             }
-            
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
             	String password = commandComponents[2];
@@ -61,13 +71,13 @@ public class Server implements MessageListener {
             		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
             	}
             	else{
-            		send(message.getJMSReplyTo(), "Info: '" + username + "' is already online or is not a valid user.");
+            		send(message.getJMSReplyTo(), "Info: Incorrect username/password combination.");
             	}
             }
             else if(commandComponents[0].equals("sign-off")){
-            	String username = commandComponents[1];
+            	String username = message.getStringProperty("username");
             	if(userDatabase.signOffUser(username)){
-            		send(message.getJMSReplyTo(), "Info: " + username + " has been signed off.");
+            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been signed off successfully.");
             	}
             	else{
             		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
