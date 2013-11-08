@@ -72,7 +72,7 @@ public class ChatClient implements MessageListener {
                 TextMessage textMessage = (TextMessage) message;
                 messageText = textMessage.getText();
                 if(messageText.contains("Welcome")){
-                	if(this.username != null){
+                	if(this.username != null && !this.username.equals(this.tempUsername)){
                 		send("sign-off");
                 	}
                 	//We set this here because it is when we know that the sign-on was successful.

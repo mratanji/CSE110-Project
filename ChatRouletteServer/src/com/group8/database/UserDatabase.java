@@ -195,7 +195,7 @@ public class UserDatabase {
 	public String listAllUsers()
 	{
 		List<String> onlineUsersList = new LinkedList<String>();  
-		String onlineUsers = ""; 
+		String onlineUsers = "Online Users:\n"; 
 		
 		User[] allUsers = userMap.values().toArray(new User[userMap.size()]);
 		
@@ -208,7 +208,7 @@ public class UserDatabase {
 		 java.util.Collections.sort(onlineUsersList);
 		 for(String user : onlineUsersList)
 		 {
-			onlineUsers = onlineUsers + "\n" + user;
+			onlineUsers = onlineUsers + user + "\n";
 		 }
 		return onlineUsers; 
 	}
