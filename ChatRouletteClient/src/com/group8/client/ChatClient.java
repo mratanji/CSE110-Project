@@ -95,7 +95,7 @@ public class ChatClient implements MessageListener {
     
     private void displayHelp(){
     	view.displayInfo("Type one of the following commands: \n");
-    	view.displayInfo("\t To add user type: \"add-user:<your_username>\" \n"
+    	view.displayInfo("\t To add user type: \"add-user:<your_username>:<your_password>\" \n"
     			+ "\t To delete your user account type: \"delete-my-account\" \n"
     			+ "\t To sign on type: \"sign-on:<your_username>:<your password>\" \n"
     			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
