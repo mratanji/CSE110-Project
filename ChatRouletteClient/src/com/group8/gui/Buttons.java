@@ -5,10 +5,12 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField; 
  
 class Buttons extends JPanel
@@ -243,8 +245,8 @@ class Buttons extends JPanel
     
     /* text fields for user input */
     private JTextField userIDTF = new JTextField();
-    private JTextField passwordTF = new JTextField();
-    private JTextField confirmPasswordTF = new JTextField();
+    private JPasswordField passwordTF = new JPasswordField();
+    private JPasswordField confirmPasswordTF = new JPasswordField();
     
     // Declare JTextFields
     private JTextField text1 = new JTextField(10);
