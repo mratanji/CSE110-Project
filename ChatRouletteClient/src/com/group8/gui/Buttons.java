@@ -1,17 +1,20 @@
 package com.group8.gui;
 
 import java.awt.FlowLayout;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField; 
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
  
 class Buttons extends JPanel
 {
@@ -105,13 +108,13 @@ class Buttons extends JPanel
     public Student()
     {
 
-        JPanel panel = new JPanel();       
+        JPanel panel = new JPanel(); 
         panel.setLayout(new BorderLayout());
         newUserButtonClicked = false;
 
        
         
-         panel.add (panel0, BorderLayout.NORTH);
+         panel.add(panel0, BorderLayout.NORTH);
          panel.add(buttons, BorderLayout.SOUTH);
         
          panel.add(student, BorderLayout.CENTER);
@@ -144,6 +147,7 @@ class Buttons extends JPanel
         buttons.createButtonAddActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
 
+            	student.passwordCreateMatch();
             	/* create a user */
             	
             }
@@ -224,7 +228,7 @@ class Buttons extends JPanel
   	  
   class StudentInformation extends JPanel
 {
-   
+	JPanel mainPanel = new JPanel();
     JPanel panel = new JPanel();
     
     // Declare JLabels
@@ -239,7 +243,7 @@ class Buttons extends JPanel
     private JLabel userIDLabel = new JLabel("User ID");
     private JLabel passwordLabel = new JLabel("Password");
     private JLabel confirmPasswordLabel = new JLabel("Retype Password");
-
+    
     /* label for error msg */
     private JLabel errMsgLabel = new JLabel();
     
@@ -259,7 +263,7 @@ class Buttons extends JPanel
     { 
          
         // Set the Grid Layout
-        panel.setLayout( new GridLayout(3, 2)); // 5 ,2
+        panel.setLayout( new GridLayout(3, 2));
          
         // Add items to grid
         panel.add(userIDLabel);
@@ -269,12 +273,12 @@ class Buttons extends JPanel
         panel.add(confirmPasswordLabel);
         panel.add(confirmPasswordTF);
         
-        
+
         setConfirmPasswordVisibility(false);
          
-         
-        add(panel);     
-    
+        mainPanel.add(panel, BorderLayout.NORTH);
+        
+        add(mainPanel);
     }
      
 	public void setConfirmPasswordVisibility(boolean visible) {
@@ -282,12 +286,35 @@ class Buttons extends JPanel
 		confirmPasswordTF.setVisible(visible);
 	}
 	
+	
 	public void clearTextFields() {
 		userIDTF.setText("");
 		passwordTF.setText("");
 		confirmPasswordTF.setText("");
 	}
 	  
+	public boolean passwordCreateMatch(){
+		boolean matches = true;
+		char[] password = passwordTF.getPassword();
+		char[] confirmPassword = confirmPasswordTF.getPassword();
+		
+		if (!Arrays.equals(password, confirmPassword)) {
+			matches = false;
+			
+			JOptionPane.showMessageDialog(mainPanel, "Your password and the password confirmation do not match.");
+		}
+		
+		else {
+			matches = true;
+			JOptionPane.showMessageDialog(mainPanel, "Your User ID: " + userIDTF.getText());
+		}
+			
+		
+		return matches;
+	}
+	
+	
+	
     public String getName()
     {
         return text1.getText();
