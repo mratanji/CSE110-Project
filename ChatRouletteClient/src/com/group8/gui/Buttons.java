@@ -134,6 +134,7 @@ class Buttons extends JPanel
             	panel0.setLoginLabelVisibility(!newUserButtonClicked);
             	student.setConfirmPasswordVisibility(newUserButtonClicked);
             	
+            	student.clearTextFields();
             	
             }
         });
@@ -154,6 +155,7 @@ class Buttons extends JPanel
             	panel0.setLoginLabelVisibility(!newUserButtonClicked);
             	student.setConfirmPasswordVisibility(newUserButtonClicked);
             	
+            	student.clearTextFields();
             }
         });
         
@@ -251,7 +253,6 @@ class Buttons extends JPanel
     private JTextField text4 = new JTextField(10);
      
      
-     
     public StudentInformation()
     { 
          
@@ -277,6 +278,12 @@ class Buttons extends JPanel
 	public void setConfirmPasswordVisibility(boolean visible) {
 		confirmPasswordLabel.setVisible(visible);
 		confirmPasswordTF.setVisible(visible);
+	}
+	
+	public void clearTextFields() {
+		userIDTF.setText("");
+		passwordTF.setText("");
+		confirmPasswordTF.setText("");
 	}
 	  
     public String getName()
