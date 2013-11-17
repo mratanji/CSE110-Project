@@ -1,5 +1,7 @@
 package com.group8.client;
 
+import java.util.ArrayList;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -24,6 +26,8 @@ public class ChatClient implements MessageListener {
     private String username;
     private String tempUsername;
     private CommandGroup commandGroup;
+    private ArrayList<String> availableRooms;
+    //the chatRoom needs to be implemented in the server
     
     public ChatClient() {
     	view = new ConsoleView(this);
@@ -31,6 +35,7 @@ public class ChatClient implements MessageListener {
     	setupConnection();
     	displayWelcomeMessage();
     	displayHelp();
+    	availableRooms = new ArrayList<String>();
     }
     
     public void onCommandEntered(String message){
@@ -104,6 +109,34 @@ public class ChatClient implements MessageListener {
     			+ "\t To list all online users type: \"list-all:<your_username>\" \n");
     	view.displayInfo("Enter commands below:");
     }
+    
+    public void listChatRooms()
+    {
+    	for(int i = 0; i < availableRooms.size(); i++)
+    	{
+    		System.out.println(availableRooms.get(i) + "\n");
+    	}
+    }
+    
+    public void addToChatRoom(String newChatRoom)
+    {
+    	availableRooms.add(newChatRoom);
+    }
+    
+    public void removeFromChatRoom(String ChatRoom)
+    {
+    	int index = 0;
+    	for(int i = 0; i < availableRooms.size(); i++)
+    	{
+    		if(availableRooms.get(i).equals(ChatRoom))
+    		{
+    			index = i;
+    		}
+    	}
+    	availableRooms.remove(index);
+    	
+    }
+    
     
     private void setupConnection(){
     	ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(Constants.ACTIVEMQ_URL);
