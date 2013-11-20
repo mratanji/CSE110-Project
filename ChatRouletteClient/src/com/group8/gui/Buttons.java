@@ -3,6 +3,7 @@ package com.group8.gui;
 import java.awt.FlowLayout;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,11 +11,14 @@ import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
+
+import com.group8.client.ChatClient;
  
 class Buttons extends JPanel
 {
@@ -25,10 +29,6 @@ class Buttons extends JPanel
     private JButton newUserButton = new JButton("New user ?");
     private JButton createButton = new JButton ("Create !");
     private JButton nvmButton = new JButton("Never Mind");
-    
-    private JButton addButton = new JButton("Add");
-    private JButton editButton = new JButton("Edit");
-    private JButton deleteButton = new JButton("Delete");
   
  
     public Buttons()
@@ -38,13 +38,7 @@ class Buttons extends JPanel
       panel.add(newUserButton);
       panel.add(createButton);
       panel.add(nvmButton);
-      
       setLoginButtonVisibility(true);
-      /*
-      panel.add(addButton);
-      panel.add(editButton);
-      panel.add(deleteButton);
-        */
       add(panel);
     }
  
@@ -75,59 +69,54 @@ class Buttons extends JPanel
     {
       nvmButton.addActionListener(listener);
     }
-    
-    
-    
-    
-    public void addButtonAddActionListener(ActionListener listener)
-    {
-      addButton.addActionListener(listener);
-    }
-     
-    public void editButtonAddActionListener(ActionListener listener)
-    {
-      editButton.addActionListener(listener);
-    }
-    
-    public void deleteButtonAddActionListener(ActionListener listener)
-    {
-      deleteButton.addActionListener(listener);
-    }
        
    
 }
+
+
  
- class Student extends JPanel
+ class Login extends JPanel
  {
+	 
+	 //Client variable: 
+	 ChatClient client; 
+	 
  	boolean newUserButtonClicked;
     Buttons buttons = new Buttons();
-    StudentInformation student = new StudentInformation();
+    LoginInformation loginInfo = new LoginInformation();
     boardDisplay display = new boardDisplay();
-    Panel0 panel0 = new Panel0();
+    TitlePanel title = new TitlePanel();
     
-    public Student()
+    public Login(ChatClient c)
     {
-
-        JPanel panel = new JPanel(); 
+    	//INITIALIZE: Chat client object with current view
+    	client = c; 
+    	
+        final JPanel panel = new JPanel(); 
         panel.setLayout(new BorderLayout());
+     
         newUserButtonClicked = false;
 
        
         
-         panel.add(panel0, BorderLayout.NORTH);
+         panel.add(title, BorderLayout.NORTH);
          panel.add(buttons, BorderLayout.SOUTH);
         
-         panel.add(student, BorderLayout.CENTER);
-         /*
-         panel.add(display, BorderLayout.SOUTH);
-        */
+         panel.add(loginInfo, BorderLayout.CENTER);
+
         add(panel);
          
+        final Dimension size = new Dimension(600, 700); 
+        
         buttons.loginButtonAddActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-
-            	/*check ID, password and decide if a user can log in */
-            	
+            	String commandMessage = loginInfo.signOnUser(); 
+            	client.onCommandEntered(commandMessage); 
+            	new ChatDisplay(client); 
+            	JFrame jf = new JFrame();
+            	jf.setMinimumSize(size);  
+            	jf.add(new ChatDisplay(client)); 
+            	jf.setVisible(true); 
             }
         });
         
@@ -136,10 +125,10 @@ class Buttons extends JPanel
             	newUserButtonClicked = true;
             	
             	buttons.setLoginButtonVisibility(!newUserButtonClicked);
-            	panel0.setLoginLabelVisibility(!newUserButtonClicked);
-            	student.setConfirmPasswordVisibility(newUserButtonClicked);
+            	title.setLoginLabelVisibility(!newUserButtonClicked);
+            	loginInfo.setConfirmPasswordVisibility(newUserButtonClicked);
             	
-            	student.clearTextFields();
+            	loginInfo.clearTextFields();
             	
             }
         });
@@ -147,9 +136,12 @@ class Buttons extends JPanel
         buttons.createButtonAddActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
 
-            	student.passwordCreateMatch();
-            	/* create a user */
-            	
+            	if(loginInfo.passwordCreateMatch())
+            	{
+                	/* create a user */
+                	String commandMessage = loginInfo.createNewUser(); 
+                	client.onCommandEntered(commandMessage); 
+            	}
             }
         });
         
@@ -158,54 +150,26 @@ class Buttons extends JPanel
             	newUserButtonClicked = false;
             	
             	buttons.setLoginButtonVisibility(!newUserButtonClicked);
-            	panel0.setLoginLabelVisibility(!newUserButtonClicked);
-            	student.setConfirmPasswordVisibility(newUserButtonClicked);
+            	title.setLoginLabelVisibility(!newUserButtonClicked);
+            	loginInfo.setConfirmPasswordVisibility(newUserButtonClicked);
             	
-            	student.clearTextFields();
+            	loginInfo.clearTextFields();
             }
         });
         
         
-        
-        buttons.addButtonAddActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                String firstName = student.getName();
-                String roomNumber = student.getRoomNumber();
-                String terminalNumber = student.getTerminalNumber();
-                String comment = student.getComment();
-                 
-                display.addRow(firstName, roomNumber, terminalNumber, comment);
-            }
-        });
-         
-        buttons.editButtonAddActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                 String firstName = student.getName();
-                 String roomNumber = student.getRoomNumber();
-                 String terminalNumber = student.getTerminalNumber();
-                 String comment = student.getComment();
-                 
-                 String[] Infos = { firstName, roomNumber, terminalNumber, comment };
-                 display.editData(Infos);
-                }
-            });
-        
-        buttons.deleteButtonAddActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                   display.deleteRow();
-                }
-            });
+      
     }
 }
  
-  class Panel0 extends JPanel {
+  class TitlePanel extends JPanel {
 	  /* basic labels */
 	    private JLabel loginLabel;
 	    private JLabel createAccountLabel;
 	    
         JPanel panel = new JPanel();
         
-	  public Panel0() {
+	  public TitlePanel() {
 		  loginLabel = new JLabel("Login");
 		  createAccountLabel = new JLabel("Create a new account");
 		
@@ -226,17 +190,10 @@ class Buttons extends JPanel
   }
 
   	  
-  class StudentInformation extends JPanel
+  class LoginInformation extends JPanel
 {
 	JPanel mainPanel = new JPanel();
     JPanel panel = new JPanel();
-    
-    // Declare JLabels
-    private JLabel label1 = new JLabel("asdof");
-    private JLabel label2 = new JLabel("Room Number");
-    private JLabel label3 = new JLabel("Terminal Number");
-    private JLabel label4  = new JLabel("Comment");
-    
 
     
     /* label for user id, pw, confirm pw textfield */
@@ -259,7 +216,7 @@ class Buttons extends JPanel
     private JTextField text4 = new JTextField(10);
      
      
-    public StudentInformation()
+    public LoginInformation()
     { 
          
         // Set the Grid Layout
@@ -313,7 +270,16 @@ class Buttons extends JPanel
 		return matches;
 	}
 	
-	
+	public String createNewUser()
+	{
+		String s = new String("add-user:" + userIDTF.getText() + ":" + passwordTF.getText()); 
+		return s; 
+	}
+	public String signOnUser()
+	{
+		String s = new String("sign-on:" + userIDTF.getText() + ":" + passwordTF.getText()); 
+		return s; 
+	}
 	
     public String getName()
     {
@@ -338,3 +304,4 @@ class Buttons extends JPanel
      
      
 }
+
