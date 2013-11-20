@@ -17,6 +17,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.group8.view.ConsoleView;
 import com.group8.view.View;
+import com.group8.gui.*;
 
 public class ChatClient implements MessageListener { 
     private MessageProducer producer;
@@ -27,14 +28,23 @@ public class ChatClient implements MessageListener {
     private String tempUsername;
     private CommandGroup commandGroup;
     private ArrayList<String> availableRooms;
+    private boolean isGUI; 
+    private String allUsers; 
     //the chatRoom needs to be implemented in the server
     
-    public ChatClient() {
-    	view = new ConsoleView(this);
+    public ChatClient(boolean gui) {
+    	isGUI = gui; 
+    	if( gui ) {
+    		view = new WaitList(this); 
+    	}
+    	else {
+        	view = new ConsoleView(this);
+        	displayWelcomeMessage();
+        	displayHelp();
+    	}
     	commandGroup = new CommandGroup();
     	setupConnection();
-    	displayWelcomeMessage();
-    	displayHelp();
+
     	availableRooms = new ArrayList<String>();
     }
     
@@ -86,12 +96,32 @@ public class ChatClient implements MessageListener {
                 else if(messageText.contains("You're account has been removed")){
                 	this.username = null;
                 }
-                view.displayMessage(messageText);
+                if(isGUI == false)
+                	view.displayMessage(messageText);
+                else{
+                	setAllUserList(messageText); 
+                }
             }
         } 
         catch (JMSException e) {
 
         }
+    }
+
+    public String[] listUsersForGui()
+    {
+    	String[] userList = allUsers.split("\\n"); 
+    	String[] uList = new String[userList.length-1];
+    	for(int i = 1; i < userList.length; i++)
+    	{
+    		uList[i-1] = userList[i];
+    	}
+    	return uList; 
+    }
+    
+    private void setAllUserList(String messageList)
+    {
+    	allUsers = messageList; 
     }
     
     private void displayWelcomeMessage(){
@@ -116,6 +146,18 @@ public class ChatClient implements MessageListener {
     	{
     		System.out.println(availableRooms.get(i) + "\n");
     	}
+    }
+    
+    public String[] listChatRoomsForGui()
+    {
+    	StringBuilder sb = new StringBuilder(); 
+    	for(int i = 0; i < availableRooms.size(); i++)
+    	{
+    		sb.append(availableRooms.get(i)+"\n");
+    	}
+    	String allRooms = sb.toString(); 
+    	String[] roomList = allRooms.split("\\n"); 
+    	return roomList; 
     }
     
     public void addToChatRoom(String newChatRoom)
@@ -166,6 +208,7 @@ public class ChatClient implements MessageListener {
     }
     
     public static void main(String[] args){
-    	new ChatClient();
+    	ChatClient c = new ChatClient(true);
     }
 }
+
