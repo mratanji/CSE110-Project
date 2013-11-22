@@ -19,7 +19,7 @@ public class ChatRoom {
 	
 	public boolean addChatUser(User user)
 	{
-		if(chatMap.containsValue(user.getUsername()))
+		if(chatMap.containsKey(user.getUsername()))
 			return false;
 		
 		chatMap.put(user.getUsername(), user);
@@ -30,7 +30,7 @@ public class ChatRoom {
 	
 	public boolean removeChatUser(User user)
 	{
-		if(!chatMap.containsValue(user.getUsername()))
+		if(!chatMap.containsKey(user.getUsername()))
 			return false;
 		
 		chatMap.remove(user.getUsername());
