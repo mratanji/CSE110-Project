@@ -16,8 +16,9 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.group8.view.ConsoleView;
+import com.group8.view.GUIView;
 import com.group8.view.View;
-import com.group8.gui.*;
+
 
 public class ChatClient implements MessageListener { 
     private MessageProducer producer;
