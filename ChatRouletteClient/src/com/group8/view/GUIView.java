@@ -290,7 +290,7 @@ public class GUIView extends JFrame implements View {
 	}
 
 	@Override
-	public void displayMessage(String msg, String name) {
+	public void displayMessage(String msg) {
 		if(msg.contains("Online")) {
 			System.out.println(msg);
 	    	String[] userList = msg.split("\\n"); 
