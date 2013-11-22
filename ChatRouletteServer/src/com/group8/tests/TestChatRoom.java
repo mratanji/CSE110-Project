@@ -68,6 +68,14 @@ public class TestChatRoom {
 		assertTrue(chat.addChatUser(member1));
 		assertTrue(chat.addChatUser(member2));
 		
+		String[] users;
+		String[] users2 = {"Kenia", "Monish", "Stanley"};
+		
+		users = chat.getChatUsers();
+		
+		for(int i = 0; i < users2.length; i++)
+			if(users[i] != users2[i])
+				fail();
 	}
 
 	@Test

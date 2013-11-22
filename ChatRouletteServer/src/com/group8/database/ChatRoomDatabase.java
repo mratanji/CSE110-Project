@@ -26,7 +26,7 @@ public class ChatRoomDatabase {
 	}
 	
 	public boolean renameChatRoom( String current, String newName){
-		if( roomMap.containsKey(current))
+		if( !roomMap.containsKey(current) || roomMap.containsKey(newName))
 			return false;
 		roomMap.get(current).renameChat(newName);
 		roomMap.put(newName, roomMap.get(current));
