@@ -167,8 +167,8 @@ public class GUIView extends JFrame implements View {
 	    buttonPanel.add(newUserButton);
 	    
 	    JPanel textPanel = new JPanel();
-	    // textPanel.setPreferredSize(new Dimension(200,200));
-	    // textPanel.setLayout(new GridLayout(2,2));
+	    textPanel.setLayout(new GridLayout(2,2));
+
         // Add items to grid
         textPanel.add(userIDLabel);
         textPanel.add(userIDTF);
@@ -187,13 +187,8 @@ public class GUIView extends JFrame implements View {
         	public void actionPerformed(ActionEvent e) {
         		String commandMessage = new String("sign-on:"+userIDTF.getText()+":"+passwordTF.getText()); 
         		//TO DO Check if the user is online already: 
-        		if(listOfAllUsers == null)
-        			client.onCommandEntered(commandMessage);
-        		else if(userAlreadyOn(userIDTF.getText()))
-        			System.out.println("NOOO"); 
-        		else
-        			client.onCommandEntered(commandMessage);
-        		
+        		client.onCommandEntered(commandMessage);
+
         		frame.remove(currentPanel); 
         		frame.revalidate(); 
         		currentPanel = makeChatMainScreen(); 
@@ -236,9 +231,19 @@ public class GUIView extends JFrame implements View {
 		usersPanel.setLayout(new BorderLayout(10,10)); 
 		selectUser = new JLabel("Select a user to chat with:"); 
 		usersPanel.add(selectUser, BorderLayout.NORTH); 
-	  	onlineUsers = new JList();
-	  	onlineUsers.setListData(listOfAllUsers);
-	  	onlineUsers.setPreferredSize(new Dimension(300,200));
+		onlineUsers = new JList(); 
+		if(listOfAllUsers == null)
+		{
+			while(getListOfAllUsers() == null){
+				String[] tempList = { userIDTF.getText() };  
+				listOfAllUsers = tempList; 
+			}
+			onlineUsers.setListData(listOfAllUsers); 
+		} else {
+		  	onlineUsers.setListData(listOfAllUsers);
+		}
+
+		onlineUsers.setPreferredSize(new Dimension(300,200));
 	  	usersPanel.add(onlineUsers, BorderLayout.CENTER); 
 		goUserButton = new JButton("Start Chatting");  
 		usersPanel.add(goUserButton, BorderLayout.SOUTH); 
@@ -282,6 +287,24 @@ public class GUIView extends JFrame implements View {
 		}
 		return false; 
 	}
+	
+	public void setListOfAllUsers(String msg) {
+		System.out.println(msg);
+    	String[] userList = msg.split("\\n"); 
+    	listOfAllUsers = new String[userList.length-1];
+    	for(int i = 1; i < userList.length; i++)
+    	{
+    		listOfAllUsers[i-1] = userList[i];
+    	}
+    	
+    	//listOfAllUsers = uList; 
+    	System.out.println("SIZE" + listOfAllUsers.length);
+	}
+	
+	public String[] getListOfAllUsers() {
+		return this.listOfAllUsers; 
+	}
+	
 
 	@Override
 	public void displayInfo(String info) {
@@ -290,17 +313,9 @@ public class GUIView extends JFrame implements View {
 	}
 
 	@Override
-	public void displayMessage(String msg) {
+	public void displayMessage(String msg, String name) {
 		if(msg.contains("Online")) {
-			System.out.println(msg);
-	    	String[] userList = msg.split("\\n"); 
-	    	String[] uList = new String[userList.length-1];
-	    	for(int i = 1; i < userList.length; i++)
-	    	{
-	    		uList[i-1] = userList[i];
-	    	}
-	    	listOfAllUsers = uList; 
-	    	System.out.println("SIZE" + listOfAllUsers.length);
+			this.setListOfAllUsers(msg);
 		}
 		else
 		{
