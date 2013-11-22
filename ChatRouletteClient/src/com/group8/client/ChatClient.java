@@ -44,7 +44,6 @@ public class ChatClient implements MessageListener {
     	}
     	commandGroup = new CommandGroup();
     	setupConnection();
-
     	availableRooms = new ArrayList<String>();
     }
     
@@ -159,8 +158,8 @@ public class ChatClient implements MessageListener {
     	String[] roomList = allRooms.split("\\n"); 
     	return roomList; 
     }
-    
-    public void addToChatRoom(String newChatRoom)
+
+	public void addToChatRoom(String newChatRoom)
     {
     	availableRooms.add(newChatRoom);
     }
