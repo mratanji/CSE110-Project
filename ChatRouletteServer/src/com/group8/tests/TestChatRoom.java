@@ -64,14 +64,14 @@ public class TestChatRoom {
 		assertFalse(chat.removeChatUser(member1.getUsername()));
 	}
 
-	//This one is not done yet still needs more for the test.
+	
 	@Test
 	public void testGetChatUsers() {
 		assertTrue(chat.addChatUser(member1.getUsername()));
 		assertTrue(chat.addChatUser(member2.getUsername()));
 		
 		ArrayList<String> users;
-		String[] users2 = {"Kenia", "Monish", "Stanley"};
+		String[] users2 = {"Kenia", "Stanley", "Monish"};
 		
 		users = chat.getChatUsers();
 		

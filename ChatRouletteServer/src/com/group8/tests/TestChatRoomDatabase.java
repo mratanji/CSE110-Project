@@ -87,7 +87,7 @@ public class TestChatRoomDatabase {
 		assertTrue(chatDatabase.addChatRoom("Chat3", host.getUsername()));
 		assertTrue(chatDatabase.addChatRoom("Chat4", host.getUsername()));
 		
-		String chats = "Chat3\nChat2\nChat1\nChat4\n";
+		String chats = "Chat Rooms:\nChat3\nChat2\nChat1\nChat4\n";
 		String chats2 = chatDatabase.listChatRooms();
 		
 		assertEquals(chats, chats2);
