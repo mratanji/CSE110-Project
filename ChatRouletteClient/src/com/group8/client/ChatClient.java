@@ -29,12 +29,11 @@ public class ChatClient implements MessageListener {
     private CommandGroup commandGroup;
     private ArrayList<String> availableRooms;
     private boolean isGUI; 
-    private String allUsers; 
-    
+
     public ChatClient(boolean gui) {
     	isGUI = gui; 
     	if( gui ) {
-    		view = new WaitList(this); 
+    		view = new GUIView(this); 
     	}
     	else {
         	view = new ConsoleView(this);
@@ -94,11 +93,7 @@ public class ChatClient implements MessageListener {
                 else if(messageText.contains("You're account has been removed")){
                 	this.username = null;
                 }
-                if(isGUI == false)
-                	view.displayMessage(messageText);
-                else{
-                	setAllUserList(messageText); 
-                }
+		view.displayMessage(messageText);
             }
         } 
         catch (JMSException e) {
@@ -106,21 +101,7 @@ public class ChatClient implements MessageListener {
         }
     }
 
-    public String[] listUsersForGui()
-    {
-    	String[] userList = allUsers.split("\\n"); 
-    	String[] uList = new String[userList.length-1];
-    	for(int i = 1; i < userList.length; i++)
-    	{
-    		uList[i-1] = userList[i];
-    	}
-    	return uList; 
-    }
-    
-    private void setAllUserList(String messageList)
-    {
-    	allUsers = messageList; 
-    }
+
     
     private void displayWelcomeMessage(){
     	view.displayInfo("Welcome to Chat Roulette!\n");
