@@ -2,6 +2,8 @@ package com.group8.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import javax.jms.Destination;
 
 import org.junit.Before;
@@ -37,15 +39,15 @@ public class TestChatRoomDatabase {
 
 	@Test
 	public void testAddChatRoom() {
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
-		assertTrue(chatDatabase.addChatRoom("Chat2", host));
-		assertFalse(chatDatabase.addChatRoom("Chat1", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat2", host.getUsername()));
+		assertFalse(chatDatabase.addChatRoom("Chat1", host.getUsername()));
 	}
 
 	@Test
 	public void testRemoveChatRoom() {
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
-		assertTrue(chatDatabase.addChatRoom("Chat2", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat2", host.getUsername()));
 		assertTrue(chatDatabase.removeChatRoom("Chat2"));
 		assertTrue(chatDatabase.removeChatRoom("Chat1"));
 		assertFalse(chatDatabase.removeChatRoom("Chat2"));
@@ -53,8 +55,8 @@ public class TestChatRoomDatabase {
 
 	@Test
 	public void testRenameChatRoom() {
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
-		assertTrue(chatDatabase.addChatRoom("Chat2", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat2", host.getUsername()));
 		assertTrue(chatDatabase.renameChatRoom("Chat1", "Chat3"));
 		assertFalse(chatDatabase.removeChatRoom("Chat1"));
 		assertTrue(chatDatabase.removeChatRoom("Chat3"));
@@ -64,10 +66,10 @@ public class TestChatRoomDatabase {
     
 	@Test
 	public void testGetChatRoomArray() {
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
-		assertTrue(chatDatabase.addChatRoom("Chat2", host));
-		assertTrue(chatDatabase.addChatRoom("Chat3", host));
-		assertTrue(chatDatabase.addChatRoom("Chat4", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat2", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat3", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat4", host.getUsername()));
 		
 		String[] chatList = chatDatabase.getChatRoomArray();
 		String[] chatList2 = {"Chat3", "Chat2", "Chat1", "Chat4"};
@@ -80,10 +82,10 @@ public class TestChatRoomDatabase {
 
 	@Test
 	public void testListChatRooms() {
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
-		assertTrue(chatDatabase.addChatRoom("Chat2", host));
-		assertTrue(chatDatabase.addChatRoom("Chat3", host));
-		assertTrue(chatDatabase.addChatRoom("Chat4", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat2", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat3", host.getUsername()));
+		assertTrue(chatDatabase.addChatRoom("Chat4", host.getUsername()));
 		
 		String chats = "Chat3\nChat2\nChat1\nChat4\n";
 		String chats2 = chatDatabase.listChatRooms();
@@ -93,20 +95,20 @@ public class TestChatRoomDatabase {
 
 	@Test
 	public void testGetChatRoom() {
-		ChatRoom check = new ChatRoom("Chat1", host);
+		ChatRoom check = new ChatRoom("Chat1", host.getUsername());
 		ChatRoom chat1;
 		String[] checkUser = {"Stanley"};
-		String[] chat1User;
+		ArrayList<String> chat1User;
 		
-		assertTrue(chatDatabase.addChatRoom("Chat1", host));
+		assertTrue(chatDatabase.addChatRoom("Chat1", host.getUsername()));
 		
 		chat1 = chatDatabase.getChatRoom("Chat1");
 		assertEquals(check.getChatName(), chat1.getChatName());
 		
 		chat1User = chatDatabase.getChatRoom("Chat1").getChatUsers();
 		
-		for(int i = 0; i < chat1User.length; i++)
-			if(checkUser[i] != chat1User[i])
+		for(int i = 0; i < chat1User.size(); i++)
+			if(checkUser[i] != chat1User.get(i))
 				fail();
 	
 		

@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class TestClient {
 	
-	public ChatClient client = new ChatClient();
+	public ChatClient client = new ChatClient(false);
 	
 	
 	@Test

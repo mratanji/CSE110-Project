@@ -2,6 +2,8 @@ package com.group8.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import javax.jms.Destination;
 
 import org.junit.After;
@@ -46,42 +48,42 @@ public class TestChatRoom {
 		boolean online = true; 
 		host = new User(name, password, destination, online);
 		
-		chat = new ChatRoom(chatName, host);
+		chat = new ChatRoom(chatName, host.getUsername());
 	}
 	
 	@Test
 	public void testAddChatUser() {
-		assertTrue(chat.addChatUser(member1));
-		assertFalse(chat.addChatUser(host));
+		assertTrue(chat.addChatUser(member1.getUsername()));
+		assertFalse(chat.addChatUser(host.getUsername()));
 	}
 
 	@Test
 	public void testRemoveChatUser() {
-		assertTrue(chat.addChatUser(member1));
-		assertTrue(chat.removeChatUser(member1));
-		assertFalse(chat.removeChatUser(member1));
+		assertTrue(chat.addChatUser(member1.getUsername()));
+		assertTrue(chat.removeChatUser(member1.getUsername()));
+		assertFalse(chat.removeChatUser(member1.getUsername()));
 	}
 
 	//This one is not done yet still needs more for the test.
 	@Test
 	public void testGetChatUsers() {
-		assertTrue(chat.addChatUser(member1));
-		assertTrue(chat.addChatUser(member2));
+		assertTrue(chat.addChatUser(member1.getUsername()));
+		assertTrue(chat.addChatUser(member2.getUsername()));
 		
-		String[] users;
+		ArrayList<String> users;
 		String[] users2 = {"Kenia", "Monish", "Stanley"};
 		
 		users = chat.getChatUsers();
 		
 		for(int i = 0; i < users2.length; i++)
-			if(users[i] != users2[i])
+			if(users.get(i) != users2[i])
 				fail();
 	}
 
 	@Test
 	public void testIsChatEmpty() {
 		assertFalse(chat.isChatEmpty());
-		assertTrue(chat.removeChatUser(host));
+		assertTrue(chat.removeChatUser(host.getUsername()));
 		assertTrue(chat.isChatEmpty());
 	}
 
