@@ -96,6 +96,42 @@ public class Server implements MessageListener {
             		send(message.getJMSReplyTo(), "Info: '" + toUsername + "' is not online or is not a valid user.");
             	}
             }
+            else if(commandComponents[0].equals("chat")){
+            	String chatRoomName = commandComponents[1];
+            	String username = message.getStringProperty("username");
+            	String newMessage = chatRoomName + ":" + username + ": " + commandComponents[2];
+            	
+            	if(chatRoomDatabase.getChatRoom(chatRoomName) == null){
+            		send(message.getJMSReplyTo(), "Info: '" + chatRoomName + "' does not exist.");
+            		return;
+            	}
+            	else if(!chatRoomDatabase.getChatRoom(chatRoomName).containsUser(username)){
+            		send(message.getJMSReplyTo(), "Info: You are not in that chat room.");
+            		return;
+            	}
+            	            	
+            	ArrayList<String> usersOnline = chatRoomDatabase.getChatRoom(chatRoomName).getChatUsers(); 
+            	for(String currentUser:usersOnline){
+            		if(!currentUser.equals(message.getStringProperty("username"))){
+                		send(userDatabase.getUserDestination(currentUser), newMessage);
+            		}
+            	}
+            }
+            else if(commandComponents[0].equals("group")){
+            	String[] users = commandComponents[1].split(",");
+            	String username = message.getStringProperty("username");
+            	String newMessage = username + ": " + commandComponents[2];
+            	
+            	for(String currentUser:users){
+            		currentUser = currentUser.trim();
+            		try{
+                		send(userDatabase.getUserDestination(currentUser), newMessage);
+                	}
+                	catch(IllegalArgumentException e){
+                		send(message.getJMSReplyTo(), "Info: '" + currentUser + "' is not online or is not a valid user.");
+                	}
+            	}
+            }
             else if(commandComponents[0].equals("broadcast")){
             	//For each user, send this message
             	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
@@ -112,7 +148,7 @@ public class Server implements MessageListener {
             else if(commandComponents[0].equals("add-chat-room")){
             	String chatRoomName = commandComponents[1];
             	String username = message.getStringProperty("username");            	
-				if(chatRoomDatabase.addChatRoom(chatRoomName, userDatabase.getUser(username))){
+				if(chatRoomDatabase.addChatRoom(chatRoomName, username)){
 					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been created.");
 				}
 				else{
@@ -131,9 +167,41 @@ public class Server implements MessageListener {
             else if(commandComponents[0].equals("list-all-chat-rooms")){
             	send(message.getJMSReplyTo(), chatRoomDatabase.listChatRooms()); 
             }
+            else if(commandComponents[0].equals("join-chat-room")){
+            	String chatRoomName = commandComponents[1];
+            	String username = message.getStringProperty("username");            	
+				if(chatRoomDatabase.getChatRoom(chatRoomName).addChatUser(username)){
+					send(message.getJMSReplyTo(), "Info: You have joined '" + chatRoomName + "'");
+				}
+				else{
+					send(message.getJMSReplyTo(), "Info: Error joining chat room.");
+				}
+            }
+            else if(commandComponents[0].equals("leave-chat-room")){
+            	String chatRoomName = commandComponents[1];
+            	String username = message.getStringProperty("username");            	
+				if(chatRoomDatabase.getChatRoom(chatRoomName).removeChatUser(username)){
+					send(message.getJMSReplyTo(), "Info: You have left '" + chatRoomName + "'");
+				}
+				else{
+					send(message.getJMSReplyTo(), "Info: Error leaving chat room.");
+				}
+            }
+            else if(commandComponents[0].equals("list-chat-room-users")){
+            	String chatRoomName = commandComponents[1];
+            	send(message.getJMSReplyTo(), chatRoomDatabase.getChatRoom(chatRoomName).listUsers());
+            }
+            else if(commandComponents[0].equals("list-my-chat-rooms")){
+            	String username = message.getStringProperty("username");
+            	send(message.getJMSReplyTo(), chatRoomDatabase.listRoomsContainingUser(username));
+            }
         }
         catch (JMSException e) {
-
+        	try {
+				send(message.getJMSReplyTo(), "Error.");
+			} 
+        	catch (JMSException e1) {
+			}
         }
     }
     

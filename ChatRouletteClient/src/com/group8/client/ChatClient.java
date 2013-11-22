@@ -30,7 +30,6 @@ public class ChatClient implements MessageListener {
     private ArrayList<String> availableRooms;
     private boolean isGUI; 
     private String allUsers; 
-    //the chatRoom needs to be implemented in the server
     
     public ChatClient(boolean gui) {
     	isGUI = gui; 
@@ -135,11 +134,18 @@ public class ChatClient implements MessageListener {
     			+ "\t To sign on type: \"sign-on:<your_username>:<your password>\" \n"
     			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
+    			+ "\t To send a chat room message type: \"chat:<chat_room_name>:<message>\" \n"
+    			+ "\t To send a group message type: \"group:<user,user,user,...>:<message>\" \n"
     			+ "\t To broadcast a message to all online users type: \"broadcast:<message>\" \n"
     			+ "\t To list all online users type: \"list-all\" \n"
     			+ "\t To add a chat room type: \"add-chat-room:<chat_room_name>\" \n"
     			+ "\t To remove a chat room type: \"remove-chat-room:<chat_room_name>\" \n"
-    			+ "\t To list all chat rooms type: \"list-all-chat-rooms\" \n");
+    			+ "\t To list all chat rooms type: \"list-all-chat-rooms\" \n"
+    			+ "\t To join a chat room type: \"join-chat-room:<chat_room_name>\" \n"
+    			+ "\t To leave a chat room type: \"leave-chat-room:<chat_room_name>\" \n"
+    			+ "\t To list users in a chat room type: \"list-chat-room-users:<chat_room_name>\" \n"
+    			+ "\t To list all chat rooms you are in type: \"list-my-chat-rooms\" \n"
+    			);
     	view.displayInfo("Enter commands below:");
     }
     

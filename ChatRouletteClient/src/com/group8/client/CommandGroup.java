@@ -12,12 +12,18 @@ public class CommandGroup {
 		commandMap.put("sign-on", "sign-on");
 		commandMap.put("sign-off", "sign-off");
 		commandMap.put("send", "send");
+		commandMap.put("chat", "chat");
 		commandMap.put("broadcast", "broadcast");
+		commandMap.put("group", "group");
 		commandMap.put("exit", "exit");
 		commandMap.put("list-all", "list-all");
 		commandMap.put("add-chat-room", "add-chat-room");
 		commandMap.put("remove-chat-room", "remove-chat-room");
 		commandMap.put("list-all-chat-rooms", "list-all-chat-rooms");
+		commandMap.put("join-chat-room", "join-chat-room");
+		commandMap.put("leave-chat-room", "leave-chat-room");
+		commandMap.put("list-chat-room-users", "list-chat-room-users");
+		commandMap.put("list-my-chat-rooms", "list-my-chat-rooms");
 	}
 	
 	public boolean isValidCommand(String command){
@@ -44,6 +50,11 @@ public class CommandGroup {
 				}
 			}
 			else if(commandComponents[0].equals("send")){
+				if(commandComponents.length != 3){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("group")){
 				if(commandComponents.length != 3){
 					return false;
 				}
@@ -75,6 +86,31 @@ public class CommandGroup {
 			}
 			else if(commandComponents[0].equals("list-all-chat-rooms")){
 				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("join-chat-room")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("leave-chat-room")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("list-chat-room-users")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("list-my-chat-rooms")){
+				if(commandComponents.length != 1){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("chat")){
+				if(commandComponents.length != 3){
 					return false;
 				}
 			}

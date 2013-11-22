@@ -1,8 +1,10 @@
 package com.group8.database;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ChatRoomDatabase {
 	private HashMap<String, ChatRoom> roomMap;
@@ -11,10 +13,10 @@ public class ChatRoomDatabase {
 		this.roomMap = new HashMap<String, ChatRoom>();
 	}
 	
-	public boolean addChatRoom( String name, User user){
+	public boolean addChatRoom( String name, String username){
 		if( roomMap.containsKey(name))
 			return false;
-		roomMap.put(name, new ChatRoom(name, user));
+		roomMap.put(name, new ChatRoom(name, username));
 		return true;
 	}
 	
@@ -45,6 +47,23 @@ public class ChatRoomDatabase {
 		return (String[]) chatRooms.toArray(new String[chatRooms.size()]); 
 	}
 	
+	public String listRoomsContainingUser(String username){
+		String chatList = "Chat Rooms You Are In:\n";
+		
+		HashMap<String, ChatRoom> newMap = new HashMap<String,ChatRoom>(roomMap);
+		
+		Iterator it = newMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pairs = (Map.Entry)it.next();
+	        if(((ChatRoom) pairs.getValue()).containsUser(username)){
+	        	chatList += pairs.getKey() + "\n";
+	        }
+	        it.remove();
+	    }
+		
+		return chatList;
+	}
+	
 	public String listChatRooms(){
 		String chatList = "Chat Rooms:\n";
 		String[] chatArrayList = this.getChatRoomArray();
@@ -54,7 +73,7 @@ public class ChatRoomDatabase {
 	}
 	
 	public ChatRoom getChatRoom( String name){
-		return roomMap.get(name);
+		return roomMap.get(name);		
 	}
 }
 
