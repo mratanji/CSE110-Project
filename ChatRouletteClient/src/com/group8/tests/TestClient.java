@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.group8.client;
+package com.group8.tests;
 
 import static org.junit.Assert.*;
 
@@ -12,15 +12,6 @@ import org.junit.Test;
  *
  */
 public class TestClient {
-	
-	public ChatClient client = new ChatClient();
-	
-	
-	@Test
-	public void testonCommandEntered()
-	{
-		
-	}
 
 	@Test
 	public void testSend() {
