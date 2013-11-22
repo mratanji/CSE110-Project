@@ -12,6 +12,15 @@ import org.junit.Test;
  *
  */
 public class TestClient {
+	
+	public ChatClient client = new ChatClient();
+	
+	
+	@Test
+	public void testonCommandEntered()
+	{
+		
+	}
 
 	@Test
 	public void testSend() {
