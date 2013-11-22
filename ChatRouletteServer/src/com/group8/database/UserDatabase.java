@@ -225,4 +225,8 @@ public class UserDatabase {
 		}
 		return (String[]) onlineUsers.toArray(new String[onlineUsers.size()]); 
 	}
+	
+	public User getUser(String username){
+		return userMap.get(username);
+	}
 }

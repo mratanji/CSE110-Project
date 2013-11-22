@@ -136,7 +136,10 @@ public class ChatClient implements MessageListener {
     			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
     			+ "\t To broadcast a message to all online users type: \"broadcast:<message>\" \n"
-    			+ "\t To list all online users type: \"list-all:<your_username>\" \n");
+    			+ "\t To list all online users type: \"list-all\" \n"
+    			+ "\t To add a chat room type: \"add-chat-room:<chat_room_name>\" \n"
+    			+ "\t To remove a chat room type: \"remove-chat-room:<chat_room_name>\" \n"
+    			+ "\t To list all chat rooms type: \"list-all-chat-rooms\" \n");
     	view.displayInfo("Enter commands below:");
     }
     
@@ -208,7 +211,7 @@ public class ChatClient implements MessageListener {
     }
     
     public static void main(String[] args){
-    	ChatClient c = new ChatClient(true);
+    	ChatClient c = new ChatClient(false);
     }
 }
 

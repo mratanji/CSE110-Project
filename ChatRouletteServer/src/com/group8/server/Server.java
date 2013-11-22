@@ -19,6 +19,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import com.group8.database.ChatRoomDatabase;
 import com.group8.database.UserDatabase;
 
 public class Server implements MessageListener {
@@ -27,9 +28,11 @@ public class Server implements MessageListener {
     private MessageProducer producer;
     
     private UserDatabase userDatabase;
+    private ChatRoomDatabase chatRoomDatabase;
  
     public Server() {
     	userDatabase = new UserDatabase();
+    	chatRoomDatabase = new ChatRoomDatabase();
     	setupBrokerService();
         setupMessageQueueConsumer();
     }
@@ -105,6 +108,28 @@ public class Server implements MessageListener {
             }
             else if(commandComponents[0].equals("list-all")){
             	send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
+            }
+            else if(commandComponents[0].equals("add-chat-room")){
+            	String chatRoomName = commandComponents[1];
+            	String username = message.getStringProperty("username");            	
+				if(chatRoomDatabase.addChatRoom(chatRoomName, userDatabase.getUser(username))){
+					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been created.");
+				}
+				else{
+					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has already been created.");
+				}
+            }
+            else if(commandComponents[0].equals("remove-chat-room")){
+            	String chatRoomName = commandComponents[1];
+				if(chatRoomDatabase.removeChatRoom(chatRoomName)){
+					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been removed.");
+				}
+				else{
+					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' doesn't exist.");
+				}
+            }
+            else if(commandComponents[0].equals("list-all-chat-rooms")){
+            	send(message.getJMSReplyTo(), chatRoomDatabase.listChatRooms()); 
             }
         }
         catch (JMSException e) {

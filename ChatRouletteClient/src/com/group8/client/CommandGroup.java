@@ -15,6 +15,9 @@ public class CommandGroup {
 		commandMap.put("broadcast", "broadcast");
 		commandMap.put("exit", "exit");
 		commandMap.put("list-all", "list-all");
+		commandMap.put("add-chat-room", "add-chat-room");
+		commandMap.put("remove-chat-room", "remove-chat-room");
+		commandMap.put("list-all-chat-rooms", "list-all-chat-rooms");
 	}
 	
 	public boolean isValidCommand(String command){
@@ -57,6 +60,21 @@ public class CommandGroup {
 			}
 			else if(commandComponents[0].equals("broadcast")){
 				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("add-chat-room")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("remove-chat-room")){
+				if(commandComponents.length != 2){
+					return false;
+				}
+			}
+			else if(commandComponents[0].equals("list-all-chat-rooms")){
+				if(commandComponents.length != 1){
 					return false;
 				}
 			}

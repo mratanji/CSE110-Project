@@ -46,7 +46,7 @@ public class ChatRoomDatabase {
 	}
 	
 	public String listChatRooms(){
-		String chatList = "";
+		String chatList = "Chat Rooms:\n";
 		String[] chatArrayList = this.getChatRoomArray();
 		for( int i = 0; i < chatArrayList.length; i++)
 			chatList = chatList + chatArrayList[i] + "\n";
