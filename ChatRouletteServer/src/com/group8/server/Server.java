@@ -1,12 +1,6 @@
 package com.group8.server;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -18,6 +12,9 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerService;
 
 import com.group8.database.ChatRoomDatabase;
 import com.group8.database.UserDatabase;
@@ -195,6 +192,9 @@ public class Server implements MessageListener {
             	String username = message.getStringProperty("username");
             	send(message.getJMSReplyTo(), chatRoomDatabase.listRoomsContainingUser(username));
             }
+            else if(commandComponents[0].equals("gui")){
+            	boolean gui = true;
+            }
         }
         catch (JMSException e) {
         	try {
@@ -256,3 +256,4 @@ public class Server implements MessageListener {
     	new Server();
     }
 }
+

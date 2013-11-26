@@ -126,7 +126,6 @@ public class ChatClient implements MessageListener {
     			+ "\t To leave a chat room type: \"leave-chat-room:<chat_room_name>\" \n"
     			+ "\t To list users in a chat room type: \"list-chat-room-users:<chat_room_name>\" \n"
     			+ "\t To list all chat rooms you are in type: \"list-my-chat-rooms\" \n"
-    			+ "\t To change from console to gui view type: \"gui\" \n"
     			);
     	view.displayInfo("Enter commands below:");
     }
@@ -202,5 +201,4 @@ public class ChatClient implements MessageListener {
     	ChatClient c = new ChatClient(false);
     }
 }
-
 

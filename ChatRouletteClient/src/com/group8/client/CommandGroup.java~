@@ -24,7 +24,6 @@ public class CommandGroup {
 		commandMap.put("leave-chat-room", "leave-chat-room");
 		commandMap.put("list-chat-room-users", "list-chat-room-users");
 		commandMap.put("list-my-chat-rooms", "list-my-chat-rooms");
-		commandMap.put("gui", "gui");
 	}
 	
 	public boolean isValidCommand(String command){
@@ -115,13 +114,6 @@ public class CommandGroup {
 					return false;
 				}
 			}
-			else if(commandComponents[0].equals("gui")){
-				if(commandComponents.length != 1){
-					return false;
-				}
-				boolean gui = true;
-				ChatClient chat = new ChatClient(gui);
-			}
 			else{
 				return false;
 			}
@@ -132,4 +124,3 @@ public class CommandGroup {
 		return true;
 	}
 }
-
