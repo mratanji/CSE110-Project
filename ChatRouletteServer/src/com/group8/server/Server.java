@@ -54,15 +54,6 @@ public class Server implements MessageListener {
 				}
 		
             }
-            else if(commandComponents[0].equals("delete-my-account")){
-            	String username = message.getStringProperty("username");
-            	if(userDatabase.removeUser(username)){
-            		send(message.getJMSReplyTo(), "You're account has been removed. We are sorry to see you go.");
-            	}
-            	else{
-            		send(message.getJMSReplyTo(), "Info: Error deleting account. Are you signed on?");
-            	}
-            }
             else if(commandComponents[0].equals("sign-on")){
             	String username = commandComponents[1];
             	String password = commandComponents[2];
@@ -74,126 +65,144 @@ public class Server implements MessageListener {
             		send(message.getJMSReplyTo(), "Info: Incorrect username/password combination.");
             	}
             }
-            else if(commandComponents[0].equals("sign-off")){
-            	String username = message.getStringProperty("username");
-            	if(userDatabase.signOffUser(username)){
-            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been signed off successfully.");
-            	}
-            	else{
-            		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
-            	}
-            }
-            else if(commandComponents[0].equals("send")){
-            	String toUsername = commandComponents[1];
-            	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
-            	try{
-            		send(userDatabase.getUserDestination(toUsername), newMessage);
-            	}
-            	catch(IllegalArgumentException e){
-            		send(message.getJMSReplyTo(), "Info: '" + toUsername + "' is not online or is not a valid user.");
-            	}
-            }
-            else if(commandComponents[0].equals("chat")){
-            	String chatRoomName = commandComponents[1];
-            	String username = message.getStringProperty("username");
-            	String newMessage = chatRoomName + ":" + username + ": " + commandComponents[2];
-            	
-            	if(chatRoomDatabase.getChatRoom(chatRoomName) == null){
-            		send(message.getJMSReplyTo(), "Info: '" + chatRoomName + "' does not exist.");
-            		return;
-            	}
-            	else if(!chatRoomDatabase.getChatRoom(chatRoomName).containsUser(username)){
-            		send(message.getJMSReplyTo(), "Info: You are not in that chat room.");
-            		return;
-            	}
-            	            	
-            	ArrayList<String> usersOnline = chatRoomDatabase.getChatRoom(chatRoomName).getChatUsers(); 
-            	for(String currentUser:usersOnline){
-            		if(!currentUser.equals(message.getStringProperty("username"))){
-                		send(userDatabase.getUserDestination(currentUser), newMessage);
-            		}
-            	}
-            }
-            else if(commandComponents[0].equals("group")){
-            	String[] users = commandComponents[1].split(",");
-            	String username = message.getStringProperty("username");
-            	String newMessage = username + ": " + commandComponents[2];
-            	
-            	for(String currentUser:users){
-            		currentUser = currentUser.trim();
-            		try{
-                		send(userDatabase.getUserDestination(currentUser), newMessage);
-                	}
-                	catch(IllegalArgumentException e){
-                		send(message.getJMSReplyTo(), "Info: '" + currentUser + "' is not online or is not a valid user.");
-                	}
-            	}
-            }
-            else if(commandComponents[0].equals("broadcast")){
-            	//For each user, send this message
-            	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
-            	String[] usersOnline = userDatabase.getAllUsers(); 
-            	for(String currentUser:usersOnline){
-            		if(!currentUser.equals(message.getStringProperty("username"))){
-                		send(userDatabase.getUserDestination(currentUser), broadcastMessage);
-            		}
-            	}
-            }
-            else if(commandComponents[0].equals("list-all")){
-            	send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
-            }
-            else if(commandComponents[0].equals("add-chat-room")){
-            	String chatRoomName = commandComponents[1];
-            	String username = message.getStringProperty("username");            	
-				if(chatRoomDatabase.addChatRoom(chatRoomName, username)){
-					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been created.");
-				}
-				else{
-					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has already been created.");
-				}
-            }
-            else if(commandComponents[0].equals("remove-chat-room")){
-            	String chatRoomName = commandComponents[1];
-				if(chatRoomDatabase.removeChatRoom(chatRoomName)){
-					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been removed.");
-				}
-				else{
-					send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' doesn't exist.");
-				}
-            }
-            else if(commandComponents[0].equals("list-all-chat-rooms")){
-            	send(message.getJMSReplyTo(), chatRoomDatabase.listChatRooms()); 
-            }
-            else if(commandComponents[0].equals("join-chat-room")){
-            	String chatRoomName = commandComponents[1];
-            	String username = message.getStringProperty("username");            	
-				if(chatRoomDatabase.getChatRoom(chatRoomName).addChatUser(username)){
-					send(message.getJMSReplyTo(), "Info: You have joined '" + chatRoomName + "'");
-				}
-				else{
-					send(message.getJMSReplyTo(), "Info: Error joining chat room.");
-				}
-            }
-            else if(commandComponents[0].equals("leave-chat-room")){
-            	String chatRoomName = commandComponents[1];
-            	String username = message.getStringProperty("username");            	
-				if(chatRoomDatabase.getChatRoom(chatRoomName).removeChatUser(username)){
-					send(message.getJMSReplyTo(), "Info: You have left '" + chatRoomName + "'");
-				}
-				else{
-					send(message.getJMSReplyTo(), "Info: Error leaving chat room.");
-				}
-            }
-            else if(commandComponents[0].equals("list-chat-room-users")){
-            	String chatRoomName = commandComponents[1];
-            	send(message.getJMSReplyTo(), chatRoomDatabase.getChatRoom(chatRoomName).listUsers());
-            }
-            else if(commandComponents[0].equals("list-my-chat-rooms")){
-            	String username = message.getStringProperty("username");
-            	send(message.getJMSReplyTo(), chatRoomDatabase.listRoomsContainingUser(username));
-            }
             else if(commandComponents[0].equals("gui")){
             	boolean gui = true;
+            }
+            else if( message.getStringProperty("username") != null){
+	            if(commandComponents[0].equals("delete-my-account")){
+	            	String username = message.getStringProperty("username");
+	            	if( userDatabase.isUserOnline(username)){
+	            		if(userDatabase.removeUser(username)){
+	            			send(message.getJMSReplyTo(), "You're account has been removed. We are sorry to see you go.");
+	            			chatRoomDatabase.removeUserFromRooms(username);
+	            		}
+	            		else{
+	            			send(message.getJMSReplyTo(), "Info: Error deleting account. Are you signed on?");
+	            		}
+	            	}
+	            }
+	
+	            else if(commandComponents[0].equals("sign-off")){
+	            	String username = message.getStringProperty("username");
+	            	if(userDatabase.signOffUser(username)){
+	            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been signed off successfully.");
+	            	}
+	            	else{
+	            		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
+	            	}
+	            }
+	            else if(commandComponents[0].equals("send")){
+	            	String toUsername = commandComponents[1];
+	            	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
+	            	try{
+	            		send(userDatabase.getUserDestination(toUsername), newMessage);
+	            	}
+	            	catch(IllegalArgumentException e){
+	            		send(message.getJMSReplyTo(), "Info: '" + toUsername + "' is not online or is not a valid user.");
+	            	}
+	            }
+	            else if(commandComponents[0].equals("chat")){
+	            	String chatRoomName = commandComponents[1];
+	            	String username = message.getStringProperty("username");
+	            	String newMessage = chatRoomName + ":" + username + ": " + commandComponents[2];
+	            	
+	            	if(chatRoomDatabase.getChatRoom(chatRoomName) == null){
+	            		send(message.getJMSReplyTo(), "Info: '" + chatRoomName + "' does not exist.");
+	            		return;
+	            	}
+	            	else if(!chatRoomDatabase.getChatRoom(chatRoomName).containsUser(username)){
+	            		send(message.getJMSReplyTo(), "Info: You are not in that chat room.");
+	            		return;
+	            	}
+	            	            	
+	            	ArrayList<String> usersOnline = chatRoomDatabase.getChatRoom(chatRoomName).getChatUsers(); 
+	            	for(String currentUser:usersOnline){
+	            		if(!currentUser.equals(message.getStringProperty("username"))){
+	                		send(userDatabase.getUserDestination(currentUser), newMessage);
+	            		}
+	            	}
+	            }
+	            else if(commandComponents[0].equals("group")){
+	            	String[] users = commandComponents[1].split(",");
+	            	String username = message.getStringProperty("username");
+	            	String newMessage = username + ": " + commandComponents[2];
+	            	
+	            	for(String currentUser:users){
+	            		currentUser = currentUser.trim();
+	            		try{
+	                		send(userDatabase.getUserDestination(currentUser), newMessage);
+	                	}
+	                	catch(IllegalArgumentException e){
+	                		send(message.getJMSReplyTo(), "Info: '" + currentUser + "' is not online or is not a valid user.");
+	                	}
+	            	}
+	            }
+	            else if(commandComponents[0].equals("broadcast")){
+	            	//For each user, send this message
+	            	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
+	            	String[] usersOnline = userDatabase.getAllUsers(); 
+	            	for(String currentUser:usersOnline){
+	            		if(!currentUser.equals(message.getStringProperty("username"))){
+	                		send(userDatabase.getUserDestination(currentUser), broadcastMessage);
+	            		}
+	            	}
+	            }
+	            else if(commandComponents[0].equals("list-all")){
+	            	send(message.getJMSReplyTo(), userDatabase.listAllUsers()); 
+	            }
+	            else if(commandComponents[0].equals("add-chat-room")){
+	            	String chatRoomName = commandComponents[1];
+	            	String username = message.getStringProperty("username");            	
+					if(chatRoomDatabase.addChatRoom(chatRoomName, username)){
+						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been created.");
+					}
+					else{
+						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has already been created.");
+					}
+	            }
+	            else if(commandComponents[0].equals("remove-chat-room")){
+	            	String chatRoomName = commandComponents[1];
+					if(chatRoomDatabase.removeChatRoom(chatRoomName)){
+						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been removed.");
+					}
+					else{
+						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' doesn't exist.");
+					}
+	            }
+	            else if(commandComponents[0].equals("list-all-chat-rooms")){
+	            	send(message.getJMSReplyTo(), chatRoomDatabase.listChatRooms()); 
+	            }
+	            else if(commandComponents[0].equals("join-chat-room")){
+	            	String chatRoomName = commandComponents[1];
+	            	String username = message.getStringProperty("username");            	
+					if(chatRoomDatabase.getChatRoom(chatRoomName).addChatUser(username)){
+						send(message.getJMSReplyTo(), "Info: You have joined '" + chatRoomName + "'");
+					}
+					else{
+						send(message.getJMSReplyTo(), "Info: Error joining chat room.");
+					}
+	            }
+	            else if(commandComponents[0].equals("leave-chat-room")){
+	            	String chatRoomName = commandComponents[1];
+	            	String username = message.getStringProperty("username");            	
+					if(chatRoomDatabase.getChatRoom(chatRoomName).removeChatUser(username)){
+						send(message.getJMSReplyTo(), "Info: You have left '" + chatRoomName + "'");
+					}
+					else{
+						send(message.getJMSReplyTo(), "Info: Error leaving chat room.");
+					}
+	            }
+	            else if(commandComponents[0].equals("list-chat-room-users")){
+	            	String chatRoomName = commandComponents[1];
+	            	send(message.getJMSReplyTo(), chatRoomDatabase.getChatRoom(chatRoomName).listUsers());
+	            }
+	            else if(commandComponents[0].equals("list-my-chat-rooms")){
+	            	String username = message.getStringProperty("username");
+	            	send(message.getJMSReplyTo(), chatRoomDatabase.listRoomsContainingUser(username));
+	            }
+            }
+            else{
+            	send(message.getJMSReplyTo(), "User is not signed on!");
             }
         }
         catch (JMSException e) {

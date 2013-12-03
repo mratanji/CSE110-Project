@@ -64,6 +64,19 @@ public class ChatRoomDatabase {
 		return chatList;
 	}
 	
+	public void removeUserFromRooms(String username){
+		String[] chatRooms = this.getChatRoomArray();
+		
+		
+		for(String chat : chatRooms)
+		{
+			if(roomMap.get(chat).containsUser(username))
+				roomMap.get(chat).removeChatUser(username);
+		}
+		
+	}
+	
+	
 	public String listChatRooms(){
 		String chatList = "Chat Rooms:\n";
 		String[] chatArrayList = this.getChatRoomArray();

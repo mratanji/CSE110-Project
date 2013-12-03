@@ -94,6 +94,9 @@ public class ChatClient implements MessageListener {
                 else if(messageText.contains("You're account has been removed")){
                 	this.username = null;
                 }
+                else if(messageText.contains("Info: '" + username + "' has been signed off successfully.")){
+                	this.username = null;
+                }
 		view.displayMessage(messageText);
             }
         } 
@@ -113,7 +116,7 @@ public class ChatClient implements MessageListener {
     	view.displayInfo("\t To add user type: \"add-user:<your_username>:<your_password>\" \n"
     			+ "\t To delete your user account type: \"delete-my-account\" \n"
     			+ "\t To sign on type: \"sign-on:<your_username>:<your password>\" \n"
-    			+ "\t To sign off type: \"sign-off:<your_username>\" \n"
+    			+ "\t To sign off type: \"sign-off\" \n"
     			+ "\t To send a message type: \"send:<user_you_are_sending_to>:<message>\" \n"
     			+ "\t To send a chat room message type: \"chat:<chat_room_name>:<message>\" \n"
     			+ "\t To send a group message type: \"group:<user,user,user,...>:<message>\" \n"
@@ -130,7 +133,40 @@ public class ChatClient implements MessageListener {
     			);
     	view.displayInfo("Enter commands below:");
     }
+
+    private void setupConnection(){
+    	ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(Constants.ACTIVEMQ_URL);
+        Connection connection;
+        try {
+            connection = connectionFactory.createConnection();
+            connection.start();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination adminQueue = session.createQueue(Constants.QUEUENAME);
+ 
+            //Setup a message producer to send message to the queue the server is consuming from
+            this.producer = session.createProducer(adminQueue);
+            this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+ 
+            //Create a temporary queue that this client will listen for responses on then create a consumer
+            //that consumes message from this temporary queue...for a real application a client should reuse
+            //the same temp queue for each message to the server...one temp queue per client
+            tempDest = session.createTemporaryQueue();
+            MessageConsumer responseConsumer = session.createConsumer(tempDest);
+ 
+            //This class will handle the messages to the temp queue as well
+            responseConsumer.setMessageListener(this);
+        } 
+        catch (JMSException e) {
+
+        }
+    }
     
+    public static void main(String[] args){
+    	ChatClient c = new ChatClient(false);
+    }
+    
+    // Was for another idea
+    /* 
     public void listChatRooms()
     {
     	for(int i = 0; i < availableRooms.size(); i++)
@@ -170,37 +206,8 @@ public class ChatClient implements MessageListener {
     	
     }
     
+    */
     
-    private void setupConnection(){
-    	ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(Constants.ACTIVEMQ_URL);
-        Connection connection;
-        try {
-            connection = connectionFactory.createConnection();
-            connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination adminQueue = session.createQueue(Constants.QUEUENAME);
- 
-            //Setup a message producer to send message to the queue the server is consuming from
-            this.producer = session.createProducer(adminQueue);
-            this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
- 
-            //Create a temporary queue that this client will listen for responses on then create a consumer
-            //that consumes message from this temporary queue...for a real application a client should reuse
-            //the same temp queue for each message to the server...one temp queue per client
-            tempDest = session.createTemporaryQueue();
-            MessageConsumer responseConsumer = session.createConsumer(tempDest);
- 
-            //This class will handle the messages to the temp queue as well
-            responseConsumer.setMessageListener(this);
-        } 
-        catch (JMSException e) {
-
-        }
-    }
-    
-    public static void main(String[] args){
-    	ChatClient c = new ChatClient(false);
-    }
 }
 
 
