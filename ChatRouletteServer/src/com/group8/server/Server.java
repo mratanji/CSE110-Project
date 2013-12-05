@@ -96,7 +96,8 @@ public class Server implements MessageListener {
 	            }
 	            else if(commandComponents[0].equals("send")){
 	            	String toUsername = commandComponents[1];
-	            	String newMessage = "Message: " + message.getStringProperty("username") + ": " + commandComponents[2];
+	            	String newMessage = "Message: " + message.getStringProperty("username") + ": "
+	            			+ message.getStringProperty("username")+ " - " + commandComponents[2];
 	            	try{
 	            		send(userDatabase.getUserDestination(toUsername), newMessage);
 	            	}
@@ -142,7 +143,9 @@ public class Server implements MessageListener {
 	            }
 	            else if(commandComponents[0].equals("broadcast")){
 	            	//For each user, send this message
-	            	String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
+	            	//String broadcastMessage = message.getStringProperty("username") + ": " + commandComponents[1]; 
+	            	String broadcastMessage = "Message: " + message.getStringProperty("username") + ": "
+	            			+ message.getStringProperty("username")+ " - " + commandComponents[1];
 	            	String[] usersOnline = userDatabase.getAllUsers(); 
 	            	for(String currentUser:usersOnline){
 	            		if(!currentUser.equals(message.getStringProperty("username"))){

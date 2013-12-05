@@ -4,13 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,9 +21,11 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 
@@ -71,6 +76,9 @@ public class GUIView extends JFrame implements View {
 	private JTextField addRemoveChatRoomTF;
 	private JButton addChatRoomButton;
 	private JButton removeChatRoomButton;
+	
+	private JTextArea broadcastTextArea;
+	private JButton broadcastButton;
 	
 	private JButton signOffButton;
 	private JButton deleteAccountButton;
@@ -160,41 +168,51 @@ public class GUIView extends JFrame implements View {
 
 	public JPanel makeLoginScreen() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
 
-		// Make the objects in the Login Screen:
-		loginLabel = new JLabel("Login");
-		userIDLabel = new JLabel("User ID");
-		passwordLabel = new JLabel("Password");
+		JPanel iconPanel = new JPanel();
+		iconPanel.setPreferredSize(new Dimension(600, 250));
+		JLabel welcomeLabel = new JLabel("Welcome", JLabel.CENTER);
+		welcomeLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+		welcomeLabel.setPreferredSize(new Dimension(600, 50));
+		iconPanel.add(welcomeLabel);
+		URL url = getClass().getResource("logo-smaller.png");
+	    ImageIcon imageicon = new ImageIcon(url);
+	    JLabel imageLabel = new JLabel(imageicon);
+	    iconPanel.add(imageLabel);
+	    panel.add(iconPanel);
+		
+		JPanel userIdPanel = new JPanel();
+		userIdPanel.setPreferredSize(new Dimension(600, 50));
+		userIDLabel = new JLabel("User ID: ");
+		userIDLabel.setPreferredSize(new Dimension(100, 50));
+		userIDTF = new JTextField(40);
+		userIdPanel.add(userIDLabel);
+		userIdPanel.add(userIDTF);
+		panel.add(userIdPanel);
+		
+		JPanel passwordPanel = new JPanel();
+		passwordPanel.setPreferredSize(new Dimension(600, 50));
+		passwordLabel = new JLabel("Password: ");
+		passwordLabel.setPreferredSize(new Dimension(100, 50));
+		passwordTF = new JPasswordField(40);
+		passwordPanel.add(passwordLabel);
+		passwordPanel.add(passwordTF);
+		panel.add(passwordPanel);
 
-		loginButton = new JButton("Login");
-		newUserButton = new JButton("New User");
-
-		userIDTF = new JTextField();
-		userIDTF.setPreferredSize(new Dimension(100, 20));
-		passwordTF = new JPasswordField();
-		passwordTF.setPreferredSize(new Dimension(100, 20));
-
-		panel.add(loginLabel, BorderLayout.NORTH);
+		
 
 		JPanel buttonPanel = new JPanel();
-		// buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.setPreferredSize(new Dimension(600, 300));
+		loginButton = new JButton("Login");
+		loginButton.setPreferredSize(new Dimension(300, 30));
+		JPanel blankPanel = new JPanel();
+		blankPanel.setPreferredSize(new Dimension(600, 200));
+		newUserButton = new JButton("New User");
+		newUserButton.setPreferredSize(new Dimension(300, 30));
 		buttonPanel.add(loginButton);
+		buttonPanel.add(blankPanel);
 		buttonPanel.add(newUserButton);
-
-		JPanel textPanel = new JPanel();
-		textPanel.setLayout(new GridLayout(2, 2));
-
-		// Add items to grid
-		textPanel.add(userIDLabel);
-		textPanel.add(userIDTF);
-		textPanel.add(passwordLabel);
-		textPanel.add(passwordTF);
-
-		// Add title, text fields, and button onto screen:
-		panel.add(loginLabel, BorderLayout.NORTH);
-		panel.add(textPanel, BorderLayout.CENTER);
-		panel.add(buttonPanel, BorderLayout.SOUTH);
+		panel.add(buttonPanel);
 
 		// Button action methods:
 		loginButton.addActionListener(new ActionListener() {
@@ -234,6 +252,16 @@ public class GUIView extends JFrame implements View {
 		JPanel panel = new JPanel();
 
 		this.updateLists();
+		
+		JPanel iconPanel = new JPanel();
+		iconPanel.setPreferredSize(new Dimension(600, 30));
+		URL url = getClass().getResource("logo-smallest.png");
+	    ImageIcon imageicon = new ImageIcon(url);
+	    JLabel imageLabel = new JLabel(imageicon);
+	    JLabel chatRouletteLabel = new JLabel("Chat Roulette ");
+	    iconPanel.add(chatRouletteLabel);
+	    iconPanel.add(imageLabel);
+	    panel.add(iconPanel);
 
 		int panelWidth = 290;
 		JPanel usersPanel = new JPanel();
@@ -268,6 +296,23 @@ public class GUIView extends JFrame implements View {
 		chatRoomPanel.add(goChatroomButton);
 		panel.add(chatRoomPanel);
 		
+		JPanel separator1 = new JPanel();
+		separator1.setPreferredSize(new Dimension(600, 45));
+		panel.add(separator1);
+		
+		broadcastTextArea = new JTextArea(5, 36);
+		broadcastTextArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		JScrollPane scrollie = new JScrollPane (broadcastTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		panel.add(scrollie);
+		
+		broadcastButton = new JButton("Broadcast");
+		broadcastButton.setPreferredSize(new Dimension(150, 80));
+		panel.add(broadcastButton);	
+		
+		JPanel separator2 = new JPanel();
+		separator2.setPreferredSize(new Dimension(600, 45));
+		panel.add(separator2);
+		
 		addRemoveChatRoomTF = new JTextField(20);
 		addChatRoomButton = new JButton("Add Chat Room");
 		removeChatRoomButton = new JButton("Remove Chat Room");
@@ -275,10 +320,21 @@ public class GUIView extends JFrame implements View {
 		panel.add(addChatRoomButton);
 		panel.add(removeChatRoomButton);
 		
+		JPanel separator = new JPanel();
+		separator.setPreferredSize(new Dimension(600, 45));
+		panel.add(separator);
+		
 		signOffButton = new JButton("Sign Off/Exit");
 		deleteAccountButton = new JButton("Delete Account");
 		panel.add(signOffButton);
 		panel.add(deleteAccountButton);
+		
+		broadcastButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.onCommandEntered("broadcast:" + broadcastTextArea.getText());
+				broadcastTextArea.setText("");
+			}
+		});
 		
 		signOffButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -302,6 +358,7 @@ public class GUIView extends JFrame implements View {
 					JPanel p = makeChatRoomScreen(selectedChatRoom);
 					tabMap.put(selectedChatRoom, p);
 					tabbedPane.add(p);
+					tabbedPane.setSelectedComponent(p);
 				}
 			}
 		});
@@ -321,6 +378,7 @@ public class GUIView extends JFrame implements View {
 					JPanel p = makeChatScreen(selectedUser);
 					tabMap.put(selectedUser, p);
 					tabbedPane.add(p);
+					tabbedPane.setSelectedComponent(p);
 				}	
 			}
 		});
@@ -333,6 +391,7 @@ public class GUIView extends JFrame implements View {
 					JPanel p = makeChatRoomScreen(selectedChatRoom);
 					tabMap.put(selectedChatRoom, p);
 					tabbedPane.add(p);
+					tabbedPane.setSelectedComponent(p);
 					client.onCommandEntered("join-chat-room:" + selectedChatRoom);
 				}
 			}
@@ -345,24 +404,40 @@ public class GUIView extends JFrame implements View {
 		p.setPreferredSize(new Dimension(600, 700));
 		p.setName(name);
 		
-		final JTextArea textArea = new JTextArea(25, 30);
+		JButton exitButton = new JButton("Exit Chat");
+		exitButton.setPreferredSize(new Dimension(580, 20));
+		p.add(exitButton);
+		
+		final JTextArea textArea = new JTextArea(34, 50);
 		textArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		textArea.setEditable(false);
-		p.add(textArea);
+		JScrollPane scroll1 = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		p.add(scroll1);
 		
-		final JTextArea textField = new JTextArea(5, 30);
+		final JTextArea textField = new JTextArea(5, 40);
 		textField.setBorder(BorderFactory.createLineBorder(Color.black));
-		p.add(textField);
+		JScrollPane scroll2 = new JScrollPane (textField, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		p.add(scroll2);
 		
 		JButton sendButton = new JButton("Send");
-		p.add(sendButton);
+		sendButton.setPreferredSize(new Dimension(100, 80));
+		p.add(sendButton);		
 		
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				client.onCommandEntered("send:"+name+":"+textField.getText());
 				textArea.append(client.username + ": " + textField.getText() + "\n\n");
+				textArea.setCaretPosition(textArea.getDocument().getLength());
 				textField.setText("");
+			}
+		});
+		
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.remove(tabMap.get(name));
+				tabMap.remove(name);
 			}
 		});
 		
@@ -374,25 +449,41 @@ public class GUIView extends JFrame implements View {
 		p.setPreferredSize(new Dimension(600, 700));
 		p.setName(name);
 		
-		final JTextArea textArea = new JTextArea(25, 30);
+		JButton exitButton = new JButton("Leave Chat Room");
+		exitButton.setPreferredSize(new Dimension(580, 20));
+		p.add(exitButton);
+		
+		final JTextArea textArea = new JTextArea(34, 50);
 		textArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		textArea.setEditable(false);
-		p.add(textArea);
+		JScrollPane scroll1 = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		p.add(scroll1);
 		
-		final JTextArea textField = new JTextArea(5, 30);
+		final JTextArea textField = new JTextArea(5, 40);
 		textField.setBorder(BorderFactory.createLineBorder(Color.black));
-		p.add(textField);
+		JScrollPane scroll2 = new JScrollPane (textField, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		p.add(scroll2);
 		
 		JButton sendButton = new JButton("Send");
-		p.add(sendButton);
+		sendButton.setPreferredSize(new Dimension(100, 80));
+		p.add(sendButton);		
 		
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String command = "chat:"+name+":"+textField.getText();
-				client.onCommandEntered(command);
+				client.onCommandEntered("chat:"+name+":"+textField.getText());
 				textArea.append(client.username + ": " + textField.getText() + "\n\n");
+				textArea.setCaretPosition(textArea.getDocument().getLength());
 				textField.setText("");
+			}
+		});
+		
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				client.onCommandEntered("leave-chat-room:"+name);
+				tabbedPane.remove(tabMap.get(name));
+				tabMap.remove(name);
 			}
 		});
 		
@@ -439,7 +530,7 @@ public class GUIView extends JFrame implements View {
 		frame.revalidate();
 		currentPanel = makeChatMainScreen();
 		tabbedPane = new JTabbedPane();
-		currentPanel.setName("Chat Roulette");
+		currentPanel.setName("Home");
 		tabbedPane.add(currentPanel);
 		frame.setContentPane(tabbedPane);
 		frame.setVisible(true);
@@ -453,15 +544,18 @@ public class GUIView extends JFrame implements View {
 	public void updateChat(String msg){
 		String[] array = msg.split(":");
 		array[1] = array[1].trim();
-		if(tabMap.containsKey(array[1])){
-			((JTextArea)tabMap.get(array[1]).getComponent(0)).append(array[2].trim() + "\n\n");
-		}
-		else{
+		if(!tabMap.containsKey(array[1])){
 			JPanel p = makeChatScreen(array[1]);
 			tabMap.put(array[1], p);
-			((JTextArea)tabMap.get(array[1]).getComponent(0)).append(array[2].trim() + "\n\n");
 			tabbedPane.add(p);
+			tabbedPane.setSelectedComponent(p);
 		}
+		else{
+			tabbedPane.setSelectedComponent(tabMap.get(array[1]));
+		}
+		JTextArea textArea = (JTextArea) (((JViewport) (((JScrollPane) tabMap.get(array[1]).getComponent(1)).getViewport()))).getView();
+		textArea.append(array[2].trim() + "\n\n");
+		textArea.setCaretPosition(textArea.getDocument().getLength());
 	}
 
 	@Override

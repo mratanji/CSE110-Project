@@ -13,7 +13,7 @@ public class CommandGroup {
 		commandMap.put("sign-off", "sign-off");//
 		commandMap.put("send", "send");//
 		commandMap.put("chat", "chat");//
-		commandMap.put("broadcast", "broadcast");
+		commandMap.put("broadcast", "broadcast");//
 		commandMap.put("group", "group");
 		commandMap.put("exit", "exit");//
 		commandMap.put("list-all", "list-all");//
@@ -21,7 +21,7 @@ public class CommandGroup {
 		commandMap.put("remove-chat-room", "remove-chat-room");//
 		commandMap.put("list-all-chat-rooms", "list-all-chat-rooms");//
 		commandMap.put("join-chat-room", "join-chat-room");//
-		commandMap.put("leave-chat-room", "leave-chat-room");
+		commandMap.put("leave-chat-room", "leave-chat-room");//
 		commandMap.put("list-chat-room-users", "list-chat-room-users");
 		commandMap.put("list-my-chat-rooms", "list-my-chat-rooms");//
 		commandMap.put("gui", "gui");//
