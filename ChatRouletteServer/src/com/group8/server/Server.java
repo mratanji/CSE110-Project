@@ -34,7 +34,7 @@ public class Server implements MessageListener {
         setupMessageQueueConsumer();
     }
     
-    public void onMessage(Message message) {    	
+    public void onMessage(Message message) {    
         try {
         	TextMessage txtMsg = (TextMessage) message;
             String messageText = txtMsg.getText();
@@ -60,6 +60,7 @@ public class Server implements MessageListener {
             	Destination userDestination = message.getJMSReplyTo();
             	if(userDatabase.signOnUser(username, password, userDestination)){
             		send(message.getJMSReplyTo(), "Info: Welcome, " + username + ".");
+            		this.sendUpdate();
             	}
             	else{
             		send(message.getJMSReplyTo(), "Info: Incorrect username/password combination.");
@@ -75,6 +76,7 @@ public class Server implements MessageListener {
 	            		if(userDatabase.removeUser(username)){
 	            			send(message.getJMSReplyTo(), "You're account has been removed. We are sorry to see you go.");
 	            			chatRoomDatabase.removeUserFromRooms(username);
+	            			this.sendUpdate();
 	            		}
 	            		else{
 	            			send(message.getJMSReplyTo(), "Info: Error deleting account. Are you signed on?");
@@ -86,6 +88,7 @@ public class Server implements MessageListener {
 	            	String username = message.getStringProperty("username");
 	            	if(userDatabase.signOffUser(username)){
 	            		send(message.getJMSReplyTo(), "Info: '" + username + "' has been signed off successfully.");
+	            		this.sendUpdate();
 	            	}
 	            	else{
 	            		send(message.getJMSReplyTo(), "Info: An error has occurred while trying to sign off.");
@@ -93,7 +96,7 @@ public class Server implements MessageListener {
 	            }
 	            else if(commandComponents[0].equals("send")){
 	            	String toUsername = commandComponents[1];
-	            	String newMessage = message.getStringProperty("username") + ": " + commandComponents[2];
+	            	String newMessage = "Message: " + message.getStringProperty("username") + ": " + commandComponents[2];
 	            	try{
 	            		send(userDatabase.getUserDestination(toUsername), newMessage);
 	            	}
@@ -104,7 +107,7 @@ public class Server implements MessageListener {
 	            else if(commandComponents[0].equals("chat")){
 	            	String chatRoomName = commandComponents[1];
 	            	String username = message.getStringProperty("username");
-	            	String newMessage = chatRoomName + ":" + username + ": " + commandComponents[2];
+	            	String newMessage = "ChatRoom:" + chatRoomName + ":" + username + " - " + commandComponents[2];
 	            	
 	            	if(chatRoomDatabase.getChatRoom(chatRoomName) == null){
 	            		send(message.getJMSReplyTo(), "Info: '" + chatRoomName + "' does not exist.");
@@ -155,6 +158,7 @@ public class Server implements MessageListener {
 	            	String username = message.getStringProperty("username");            	
 					if(chatRoomDatabase.addChatRoom(chatRoomName, username)){
 						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been created.");
+						sendUpdate();
 					}
 					else{
 						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has already been created.");
@@ -164,6 +168,7 @@ public class Server implements MessageListener {
 	            	String chatRoomName = commandComponents[1];
 					if(chatRoomDatabase.removeChatRoom(chatRoomName)){
 						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' has been removed.");
+						sendUpdate();
 					}
 					else{
 						send(message.getJMSReplyTo(), "Info: Chat Room: '" + chatRoomName + "' doesn't exist.");
@@ -212,6 +217,14 @@ public class Server implements MessageListener {
         	catch (JMSException e1) {
 			}
         }
+    }
+    
+    private void sendUpdate(){
+    	String updateMessage = "update user list";
+    	String[] usersOnline = userDatabase.getAllUsers(); 
+    	for(String currentUser:usersOnline){
+        	send(userDatabase.getUserDestination(currentUser), updateMessage);
+    	}
     }
     
     private void send(Destination destination, String message){

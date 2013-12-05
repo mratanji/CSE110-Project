@@ -25,7 +25,9 @@ public class ConsoleView extends Thread implements View{
 	}
 
 	public void displayMessage(String msg){
-		System.out.println(msg);
+		if(!msg.equals("update user list")){
+			System.out.println(msg);
+		}
 	}
 
 	public void displayInfo(String info){

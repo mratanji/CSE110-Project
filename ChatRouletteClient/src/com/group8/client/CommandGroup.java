@@ -7,24 +7,24 @@ public class CommandGroup {
 	
 	public CommandGroup(){
 		commandMap = new HashMap<String, String>();
-		commandMap.put("add-user", "add-user");
-		commandMap.put("delete-my-account", "delete-my-account");
-		commandMap.put("sign-on", "sign-on");
-		commandMap.put("sign-off", "sign-off");
-		commandMap.put("send", "send");
-		commandMap.put("chat", "chat");
+		commandMap.put("add-user", "add-user");//
+		commandMap.put("delete-my-account", "delete-my-account");//
+		commandMap.put("sign-on", "sign-on");//
+		commandMap.put("sign-off", "sign-off");//
+		commandMap.put("send", "send");//
+		commandMap.put("chat", "chat");//
 		commandMap.put("broadcast", "broadcast");
 		commandMap.put("group", "group");
-		commandMap.put("exit", "exit");
-		commandMap.put("list-all", "list-all");
-		commandMap.put("add-chat-room", "add-chat-room");
-		commandMap.put("remove-chat-room", "remove-chat-room");
-		commandMap.put("list-all-chat-rooms", "list-all-chat-rooms");
-		commandMap.put("join-chat-room", "join-chat-room");
+		commandMap.put("exit", "exit");//
+		commandMap.put("list-all", "list-all");//
+		commandMap.put("add-chat-room", "add-chat-room");//
+		commandMap.put("remove-chat-room", "remove-chat-room");//
+		commandMap.put("list-all-chat-rooms", "list-all-chat-rooms");//
+		commandMap.put("join-chat-room", "join-chat-room");//
 		commandMap.put("leave-chat-room", "leave-chat-room");
 		commandMap.put("list-chat-room-users", "list-chat-room-users");
-		commandMap.put("list-my-chat-rooms", "list-my-chat-rooms");
-		commandMap.put("gui", "gui");
+		commandMap.put("list-my-chat-rooms", "list-my-chat-rooms");//
+		commandMap.put("gui", "gui");//
 	}
 	
 	public boolean isValidCommand(String command){
