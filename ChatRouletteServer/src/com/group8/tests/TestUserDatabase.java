@@ -47,6 +47,7 @@ public class TestUserDatabase {
 	@Test
 	public void testAddUser() {
 		try{
+			clearUser();
 			assertTrue(users.addUser("Alexander", "password123", destination ));
 			assertFalse(users.addUser("Alexander", "password123", destination ));
 		}catch(IllegalArgumentException e){fail();}
