@@ -198,15 +198,21 @@ public class GUIView extends JFrame implements View {
 		passwordPanel.add(passwordLabel);
 		passwordPanel.add(passwordTF);
 		panel.add(passwordPanel);
-
 		
+		JLabel serverLabel = new JLabel("Server: ");
+		serverLabel.setPreferredSize(new Dimension(100, 50));
+		JTextField serverTF = new JTextField(40);
+		panel.add(serverLabel);
+		panel.add(serverTF);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setPreferredSize(new Dimension(600, 300));
 		loginButton = new JButton("Login");
 		loginButton.setPreferredSize(new Dimension(300, 30));
+		
 		JPanel blankPanel = new JPanel();
-		blankPanel.setPreferredSize(new Dimension(600, 200));
+		blankPanel.setPreferredSize(new Dimension(600, 150));
+		
 		newUserButton = new JButton("New User");
 		newUserButton.setPreferredSize(new Dimension(300, 30));
 		buttonPanel.add(loginButton);
